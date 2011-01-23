@@ -30,7 +30,17 @@
 
     <div id="header">
         <h1>Graph Space</h1>
-        <h2>... to boldly go where no graph has gone before</h2>
+        <h2>
+        <script type="text/javascript" charset="utf-8">
+            var texts = [
+                'the final frontier',
+                '... to explore strange new networks',
+                '... to boldly go where no graph has gone before'
+            ];
+            var rand_index = Math.floor(Math.random() * texts.length)
+            document.write(texts[rand_index]);
+        </script>
+        </h2>
     </div>
 
     <div id="getting-started">
