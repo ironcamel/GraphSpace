@@ -1,0 +1,15 @@
+appname: Graph-Space
+layout: main
+logger: "file"
+#logger: console
+
+template: template_toolkit
+engines:
+    template_toolkit:
+        start_tag: '[%'
+        stop_tag: '%]'
+
+plugins:
+    DBIC:
+        graphdb:
+            dsn: dbi:SQLite:dbname=/var/local/Graph-Space/graph.db

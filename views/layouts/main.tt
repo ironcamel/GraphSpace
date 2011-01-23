@@ -1,0 +1,49 @@
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=[% settings.charset %]" />
+<title>Graph Space</title>
+<link rel="stylesheet" href="[% base_path %]/css/style.css" />
+<script type="text/javascript" src="[% base_path %]/js/jquery.js"></script>
+</head>
+<body>
+<div id="page">
+
+<div id="sidebar">
+    <ul id="sidebar-items">
+    <li>
+        <a href="/admin" target="_blank">Admin</a>
+    </li>
+    <li>
+        <h3>Graph Spaces</h3>
+        <select name="graph_spaces" id="graph_spaces">
+        <option value="graph_space_1">graph space 1</option>
+        </select>
+    </li>
+    <li>
+        <h3>Graphs</h3>
+        <a href="[% base_path %]/graphs">Graphs</a>
+    </li>
+    </ul>
+</div>
+
+<div id="content">
+
+    <div id="header">
+        <h1>Graph Space</h1>
+        <h2>... to boldly go where no graph has gone before</h2>
+    </div>
+
+    <div id="getting-started">
+        [% content %]
+    </div>
+
+</div> <!-- content -->
+
+</div> <!-- page -->
+
+<div id="footer">
+Powered by <a href="http://perldancer.org/">Dancer</a> [% dancer_version %]
+</div>
+
+</body>
+</html>

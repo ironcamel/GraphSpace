@@ -1,0 +1,114 @@
+<script type="text/javascript" src="[% base_path %]/js/cytoscape_web/json2.min.js"></script>
+<script type="text/javascript" src="[% base_path %]/js/cytoscape_web/AC_OETags.min.js"></script>
+<script type="text/javascript" src="[% base_path %]/js/cytoscape_web/cytoscapeweb.min.js"></script>
+<script type="text/javascript" src="[% base_path %]/js/qtip.js"></script>
+
+<script type="text/javascript">
+
+function get_graph(graph_id) {
+    var xml = $.ajax({
+        url: "[% base_path %]/graphml/" + graph_id,
+        async: false
+    }).responseText;
+    return xml;
+}
+
+var div_id = "cytoscapeweb";
+
+var options = {
+    swfPath: "[% base_path %]/swf/CytoscapeWeb",
+    flashInstallerPath: "[% base_path %]/swf/playerProductInstall"
+};
+
+var vis = new org.cytoscapeweb.Visualization(div_id, options);
+
+vis.ready(function() {
+    vis.addListener("click", "nodes", function(evt) {
+        var target = evt.target;
+        var graph_id = target.data.graph_id;
+        if (graph_id) {
+            window.location = graph_id;
+            return;
+        }
+        $('#' + div_id).qtip({
+            content: {
+                text: '<div style="width:200px; height:150; overflow:auto">'
+                        + evt.target.data.popup
+                        + '</div>',
+                title: {
+                    text: evt.target.data.label,
+                    button: 'X'
+                }
+            },
+            position: {
+                corner: {
+                    target: "topLeft",
+                    tooltip: "bottomMiddle"
+                },
+                adjust: {
+                    x: evt.mouseX,
+                    y: evt.mouseY
+                }
+            },
+            show: {
+                delay: 0,
+                when: false,
+                effect: { type: "fade", length: 0 },
+                ready: true // Show the tooltip when ready
+            },
+            hide: {
+                delay: 0,
+                effect: { type: "fade", length: 1000 },
+                when: { event: "unfocus" },
+                fixed: true
+            },
+            style: {
+               border: { width: 1, radius: 6 },
+               textAlign: 'left',
+               //tip: true,
+               name: 'light'
+            } 
+        });
+    });
+
+    //vis.nodeTooltipsEnabled(true);
+});
+
+$(function() {
+    $.ajax({
+        url: "[% base_path %]/graphs/[% graph_id %].[% graph_format %]",
+        dataType: 'text',
+        error: function(xhr, text, err) { 
+            alert('ajax error: ' + text);
+        },
+        success: function(data) {
+            [% IF graph_format == 'json' %]
+            data = JSON.parse(data);
+            [% END %]
+            console.log(data);
+            vis.draw({
+                network: data,
+                visualStyle: {
+                    nodes: {
+                        //tooltipText: "${description}",
+                        labelVerticalAnchor: 'bottom'
+                    },
+                    edges: {
+                        width: { passthroughMapper: { attrName: 'width' } }
+                    }
+                }
+            });
+        }
+    });
+});
+
+
+</script>
+
+<h1>
+Graph <span id="graph_id"> [% graph_id %] </span>
+</h1>
+
+<div id="cytoscapeweb" style="width: 600px; height: 450px;">
+    Loading graph ...
+</div>

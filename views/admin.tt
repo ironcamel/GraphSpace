@@ -1,0 +1,40 @@
+
+<div id="page">
+<div id="content">
+
+<div id="header">
+    <h1>GiG</h1>
+    <h2>Graphs in Graphs!</h2>
+</div>
+
+
+<div id="getting-started">
+<form action="/admin" method="post" accept-charset="utf-8"
+        enctype="multipart/form-data">
+
+
+<div class="form_row">
+    <div> <label for="graph_spaces">Graph Space:</label> </div>
+
+    <select id="graph_spaces" name="graph_spaces" id="graph_spaces">
+        <option value="graph_space_1">graph space 1</option>
+    </select>
+</div>
+
+<div class="form_row">
+    <div> <label for="graph_name">Graph Name:</label> </div>
+    <input id="graph_name" type="text" name="graph_name" value=""/>
+</div>
+
+<div class="form_row">
+    <div> <label for="graph_file">Graph File:</label> </div>
+    <input id="graph_file" type="file" name="graph_file" value=""/>
+</div>
+
+<p><input type="submit" value="Upload"></p>
+
+</form>
+</div>
+
+</div> <!-- content -->
+</div> <!-- page -->
