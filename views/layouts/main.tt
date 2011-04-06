@@ -24,6 +24,8 @@
         <a href="[% base_path %]/graphs">Graphs</a>
     </li>
     </ul>
+    <div id="node_details">
+    </div>
 </div>
 
 <div id="content">

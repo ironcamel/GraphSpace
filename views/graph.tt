@@ -15,6 +15,58 @@ function get_graph(graph_id) {
 
 var div_id = "cytoscapeweb";
 
+var xx = 0;
+var yy = 0;
+//http://jquery-howto.blogspot.com/2009/07/identifying-locating-mouse-position-in.html
+//$().mousemove(function(e){
+//   xx = e.pageX - $('#' + div_id)[0].offsetLeft;
+//   yy = e.pageY - $('#' + div_id)[0].offsetTop;
+//});
+
+function qtip_data(evt) {
+    return {
+        content: {
+            text: '<div style="width:200px; height:150; overflow:auto">'
+                    + evt.target.data.popup
+                    + '</div>',
+            title: {
+                text: evt.target.data.label,
+                button: 'X'
+            }
+        },
+        position: {
+            corner: {
+                target: "topLeft",
+                tooltip: "bottomMiddle"
+            },
+            adjust: {
+                x: evt.mouseX,
+                y: evt.mouseY
+                //x: xx,
+                //y: yy,
+            }
+        },
+        show: {
+            delay: 0,
+            when: false,
+            effect: { type: "fade", length: 0 },
+            ready: true // Show the tooltip when ready
+        },
+        hide: {
+            delay: 0,
+            effect: { type: "fade", length: 1000 },
+            when: { event: "unfocus" },
+            fixed: true
+        },
+        style: {
+           border: { width: 1, radius: 6 },
+           textAlign: 'left',
+           //tip: true,
+           name: 'light'
+        } 
+    };
+}
+
 var options = {
     swfPath: "[% base_path %]/swf/CytoscapeWeb",
     flashInstallerPath: "[% base_path %]/swf/playerProductInstall"
@@ -23,6 +75,25 @@ var options = {
 var vis = new org.cytoscapeweb.Visualization(div_id, options);
 
 vis.ready(function() {
+    vis.addContextMenuItem("Select neighbors", "nodes", function (evt) { 
+        var rootNode = evt.target;
+        var fNeighbors = vis.firstNeighbors([rootNode]);
+        var neighborNodes = fNeighbors.neighbors;
+        vis.select([rootNode]).select(neighborNodes); 
+    });
+    vis.addListener("mouseout", "nodes", function(evt) {
+        //$('#node_details').html('');
+        $('#node_details').fadeOut();
+    });
+    vis.addListener("mouseover", "nodes", function(evt) {
+        var target = evt.target;
+        $('#node_details').html(target.data.popup).fadeIn();
+        //var q = qtip_data(evt);
+        //q['content']['text'] = target.data.hover;
+        //$('#' + div_id).qtip(q);
+        //console.log(xx + ', ' + yy)
+        //console.log($('#' + div_id).offsetLeft);
+    });
     vis.addListener("click", "nodes", function(evt) {
         var target = evt.target;
         var graph_id = target.data.graph_id;
@@ -30,45 +101,7 @@ vis.ready(function() {
             window.location = graph_id;
             return;
         }
-        $('#' + div_id).qtip({
-            content: {
-                text: '<div style="width:200px; height:150; overflow:auto">'
-                        + evt.target.data.popup
-                        + '</div>',
-                title: {
-                    text: evt.target.data.label,
-                    button: 'X'
-                }
-            },
-            position: {
-                corner: {
-                    target: "topLeft",
-                    tooltip: "bottomMiddle"
-                },
-                adjust: {
-                    x: evt.mouseX,
-                    y: evt.mouseY
-                }
-            },
-            show: {
-                delay: 0,
-                when: false,
-                effect: { type: "fade", length: 0 },
-                ready: true // Show the tooltip when ready
-            },
-            hide: {
-                delay: 0,
-                effect: { type: "fade", length: 1000 },
-                when: { event: "unfocus" },
-                fixed: true
-            },
-            style: {
-               border: { width: 1, radius: 6 },
-               textAlign: 'left',
-               //tip: true,
-               name: 'light'
-            } 
-        });
+        $('#' + div_id).qtip(qtip_data(evt));
     });
 
     //vis.nodeTooltipsEnabled(true);
