@@ -12,4 +12,4 @@ engines:
 plugins:
     DBIC:
         graphdb:
-            dsn: dbi:SQLite:dbname=/var/local/Graph-Space/graph.db
+            dsn: dbi:SQLite:dbname=/var/local/Graph-Space/graph-space.db

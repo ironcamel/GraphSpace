@@ -1,13 +1,13 @@
-<script type="text/javascript" src="[% base_path %]/js/cytoscape_web/json2.min.js"></script>
-<script type="text/javascript" src="[% base_path %]/js/cytoscape_web/AC_OETags.min.js"></script>
-<script type="text/javascript" src="[% base_path %]/js/cytoscape_web/cytoscapeweb.min.js"></script>
-<script type="text/javascript" src="[% base_path %]/js/qtip.js"></script>
+<script type="text/javascript" src="[% request.uri_base %]/js/cytoscape_web/json2.min.js"></script>
+<script type="text/javascript" src="[% request.uri_base %]/js/cytoscape_web/AC_OETags.min.js"></script>
+<script type="text/javascript" src="[% request.uri_base %]/js/cytoscape_web/cytoscapeweb.min.js"></script>
+<script type="text/javascript" src="[% request.uri_base %]/js/qtip.js"></script>
 
 <script type="text/javascript">
 
 function get_graph(graph_id) {
     var xml = $.ajax({
-        url: "[% base_path %]/graphml/" + graph_id,
+        url: "[% request.uri_base %]/graphml/" + graph_id,
         async: false
     }).responseText;
     return xml;
@@ -15,9 +15,9 @@ function get_graph(graph_id) {
 
 var div_id = "cytoscapeweb";
 
-var xx = 0;
-var yy = 0;
 //http://jquery-howto.blogspot.com/2009/07/identifying-locating-mouse-position-in.html
+//var xx = 0;
+//var yy = 0;
 //$().mousemove(function(e){
 //   xx = e.pageX - $('#' + div_id)[0].offsetLeft;
 //   yy = e.pageY - $('#' + div_id)[0].offsetTop;
@@ -42,8 +42,6 @@ function qtip_data(evt) {
             adjust: {
                 x: evt.mouseX,
                 y: evt.mouseY
-                //x: xx,
-                //y: yy,
             }
         },
         show: {
@@ -68,8 +66,8 @@ function qtip_data(evt) {
 }
 
 var options = {
-    swfPath: "[% base_path %]/swf/CytoscapeWeb",
-    flashInstallerPath: "[% base_path %]/swf/playerProductInstall"
+    swfPath: "[% request.uri_base %]/swf/CytoscapeWeb",
+    flashInstallerPath: "[% request.uri_base %]/swf/playerProductInstall"
 };
 
 var vis = new org.cytoscapeweb.Visualization(div_id, options);
@@ -83,7 +81,7 @@ vis.ready(function() {
     });
     vis.addListener("mouseout", "nodes", function(evt) {
         //$('#node_details').html('');
-        $('#node_details').fadeOut();
+        //$('#node_details').fadeOut();
     });
     vis.addListener("mouseover", "nodes", function(evt) {
         var target = evt.target;
@@ -104,27 +102,34 @@ vis.ready(function() {
         $('#' + div_id).qtip(qtip_data(evt));
     });
 
-    //vis.nodeTooltipsEnabled(true);
+    vis.nodeTooltipsEnabled(true);
 });
 
+var metadata;
 $(function() {
     $.ajax({
-        url: "[% base_path %]/graphs/[% graph_id %].[% graph_format %]",
+        url: "[% request.uri_base %]/graphs/[% graph_id %].[% graph_format %]",
         dataType: 'text',
         error: function(xhr, text, err) { 
             alert('ajax error: ' + text);
         },
         success: function(data) {
+            var graph = data;
             [% IF graph_format == 'json' %]
             data = JSON.parse(data);
+            graph = data['graph'];
+            var metadata = data['metadata'];
+            if (metadata && metadata['graph_details']) {
+                $('#graph_details').html(metadata['graph_details']);
+                $('#graph_details_cont').show();
+            }
             [% END %]
-            console.log(data);
+            //console.log(data);
             vis.draw({
-                network: data,
+                network: graph,
                 visualStyle: {
                     nodes: {
-                        //tooltipText: "${description}",
-                        labelVerticalAnchor: 'bottom'
+                        tooltipText: "${tooltip}",
                     },
                     edges: {
                         width: { passthroughMapper: { attrName: 'width' } }

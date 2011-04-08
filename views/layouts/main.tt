@@ -2,31 +2,11 @@
 <head>
 <meta http-equiv="Content-type" content="text/html; charset=[% settings.charset %]" />
 <title>Graph Space</title>
-<link rel="stylesheet" href="[% base_path %]/css/style.css" />
-<script type="text/javascript" src="[% base_path %]/js/jquery.js"></script>
+<link rel="stylesheet" href="[% request.uri_base %]/css/style.css" />
+<script type="text/javascript" src="[% request.uri_base %]/js/jquery.js"></script>
 </head>
 <body>
 <div id="page">
-
-<div id="sidebar">
-    <ul id="sidebar-items">
-    <li>
-        <a href="/admin" target="_blank">Admin</a>
-    </li>
-    <li>
-        <h3>Graph Spaces</h3>
-        <select name="graph_spaces" id="graph_spaces">
-        <option value="graph_space_1">graph space 1</option>
-        </select>
-    </li>
-    <li>
-        <h3>Graphs</h3>
-        <a href="[% base_path %]/graphs">Graphs</a>
-    </li>
-    </ul>
-    <div id="node_details">
-    </div>
-</div>
 
 <div id="content">
 
@@ -50,6 +30,34 @@
     </div>
 
 </div> <!-- content -->
+
+<div id="sidebar">
+    <ul id="sidebar-items">
+    <li>
+        <a href="/admin" target="_blank">Admin</a>
+    </li>
+    <!--
+    <li>
+        <h3>Graph Spaces</h3>
+        <select name="graph_spaces" id="graph_spaces">
+        <option value="graph_space_1">graph space 1</option>
+        </select>
+    </li>
+    <li>
+        <h3>Graphs</h3>
+        <a href="[% request.uri_base %]/graphs">Graphs</a>
+    </li>
+    -->
+    <li id="graph_details_cont">
+        <h3>Graph Details</h3>
+        <div id="graph_details"></div>
+    </li>
+    <li>
+        <h3>Node Details</h3>
+        <div id="node_details"></div>
+    </li>
+    </ul>
+</div> <!-- sidebar -->
 
 </div> <!-- page -->
 

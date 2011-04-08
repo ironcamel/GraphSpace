@@ -98,22 +98,24 @@ INSERT INTO graph(id, graphml) VALUES('4','<graphml>
 </graphml>');
 
 INSERT INTO graph(id, json) VALUES('5', '{
-   "data" : {
-      "nodes" : [
-         {
-            "id" : "1"
-         },
-         {
-            "id" : "2"
-         }
-      ],
-      "edges" : [
-         {
-            "source" : "2",
-            "target" : "1",
-            "id" : "2to1"
-         }
-      ]
-   }
+    "graph": {
+       "data" : {
+          "nodes" : [
+             {
+                "id" : "1"
+             },
+             {
+                "id" : "2"
+             }
+          ],
+          "edges" : [
+             {
+                "source" : "2",
+                "target" : "1",
+                "id" : "2to1"
+             }
+          ]
+       }
+    }
 }');
-    
+

@@ -6,11 +6,6 @@ our $VERSION = '0.0001';
 use Dancer::Plugin::Ajax;
 use Dancer::Plugin::DBIC;
 
-before_template sub {
-    my $tmpl_vars = shift;
-    ($tmpl_vars->{base_path} = request->base->path) =~ s{/$}{};
-};
-
 get '/' => sub { redirect '/graphs' };
 
 get '/admin' => sub { template 'admin' };
