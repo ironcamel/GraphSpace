@@ -1,7 +1,18 @@
 CREATE TABLE graph (
-    id text primary key,
-    json text,
-    graphml text
+    id TEXT primary key,
+    json TEXT,
+    graphml TEXT
+);
+
+CREATE TABLE graph_tag (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name TEXT
+);
+
+CREATE TABLE graph_to_tag (
+	graph_id TEXT,
+	tag_id INTEGER,
+	PRIMARY KEY (graph_id, tag_id)
 );
 
 INSERT INTO graph(id, graphml) VALUES('1','<graphml>
@@ -116,6 +127,7 @@ INSERT INTO graph(id, json) VALUES('5', '{
              }
           ]
        }
-    }
+    },
+    "metadata": { }
 }');
 

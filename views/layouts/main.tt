@@ -4,6 +4,24 @@
 <title>Graph Space</title>
 <link rel="stylesheet" href="[% request.uri_base %]/css/style.css" />
 <script type="text/javascript" src="[% request.uri_base %]/js/jquery.js"></script>
+<script>
+function delete_tag(tag) {
+    var url = '[% request.uri_base %]/graphs/[% graph_id %]/tags/' + tag;
+    console.log(url);
+    $.ajax({
+        url: url,
+        dataType: 'text',
+        type: 'DELETE',
+        error: function(xhr, text, err) { 
+            alert('ajax error: ' + text);
+        },
+        success: function(data) {
+            console.log('deleted ' + tag);
+            $('#tag_' + tag).remove();
+        }
+    });
+}
+</script>
 </head>
 <body>
 <div id="page">
@@ -25,7 +43,7 @@
         </h2>
     </div>
 
-    <div id="getting-started">
+    <div id="content-body">
         [% content %]
     </div>
 
@@ -34,9 +52,57 @@
 <div id="sidebar">
     <ul id="sidebar-items">
     <li>
-        <a href="/admin" target="_blank">Admin</a>
+        <a href="[% request.uri_base %]/graphs">All Graphs</a>
+    </li>
+    <li>
+        <h3>Tags:</h3>
+        <ul id="tags" style="margin-bottom:4px">
+        [% FOREACH tag IN graph_tags %]
+            <li id="tag_[% tag.name %]" class="tag_cont">
+            <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]" target="_blank">[% tag.name %]</a>
+            [% IF graph_id %]
+            <a href="#" onclick="delete_tag('[% tag.name %]')">X</a>
+            [% END %]
+            </li>
+        [% END %]
+        </ul>
+        [% IF graph_id %]
+        <input id="new_tag" type="text" name="new_tag" value=""/>
+        <input id="add_tag" type="button" name="add_tag" value="Add Tag">
+        <script>
+        $('#add_tag').click(function() {
+            var tag = $('#new_tag').val();
+            if (!tag) {
+                alert('No tag entered');
+                return;
+            }
+            $.ajax({
+                type: 'POST',
+                url: '[% request.uri_base %]/graphs/[% graph_id %]/tags',
+                data: tag,
+                success: function(tag, textStatus) {
+                    console.log(textStatus);
+                    console.log(tag);
+                    $('#tags').append(
+                        '<li id="tag_' + tag.name + '" class="tag_cont">'
+                        + '<a href="[% request.uri_base %]/graphs?tag='
+                            + tag.name + '" target="_blank">'
+                            + tag.name + '</a> '
+                        + '<a href="#" onclick="delete_tag('
+                            + "'" + tag.name + "'" + ')">X</a>'
+                        + '</li>'
+                    );
+                },
+                dataType: 'json'
+            });
+        });
+        </script>
+        [% END %]
     </li>
     <!--
+    <li>
+        <a href="/admin" target="_blank">Admin</a>
+    </li>
     <li>
         <h3>Graph Spaces</h3>
         <select name="graph_spaces" id="graph_spaces">
@@ -48,6 +114,7 @@
         <a href="[% request.uri_base %]/graphs">Graphs</a>
     </li>
     -->
+    [% IF graph_id %]
     <li id="graph_details_cont">
         <h3>Graph Details</h3>
         <div id="graph_details"></div>
@@ -56,6 +123,7 @@
         <h3>Node Details</h3>
         <div id="node_details"></div>
     </li>
+    [% END %]
     </ul>
 </div> <!-- sidebar -->
 

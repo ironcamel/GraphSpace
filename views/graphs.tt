@@ -2,7 +2,7 @@
 <ul>
 [% FOREACH g IN graphs %]
     <li>
-    <a href="[% base_path %]/graphs/[% g.id %]">Graph [% g.id %]</a>
+    <a href="[% request.uri_base %]/graphs/[% g.id %]">Graph [% g.id %]</a>
     </li>
 [% END %]
 </ul>

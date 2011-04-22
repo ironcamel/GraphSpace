@@ -12,4 +12,7 @@ engines:
 plugins:
     DBIC:
         graphdb:
+            schema_class: 'GraphSpace::Schema'
             dsn: dbi:SQLite:dbname=/var/local/Graph-Space/graph-space.db
+
+ppi_path: /var/local/Graph-Space/ppi/yeast_biogrid

@@ -13,6 +13,16 @@ function get_graph(graph_id) {
     return xml;
 }
 
+function get_ppi(go_id) {
+    return $.ajax({
+        url: "[% request.uri_base %]/ppi/" + go_id,
+        dataType: 'text',
+        error: function(xhr, text, err) { 
+            alert('ajax error: ' + text);
+        },
+    }).responseText;
+}
+
 var div_id = "cytoscapeweb";
 
 //http://jquery-howto.blogspot.com/2009/07/identifying-locating-mouse-position-in.html
@@ -23,14 +33,28 @@ var div_id = "cytoscapeweb";
 //   yy = e.pageY - $('#' + div_id)[0].offsetTop;
 //});
 
+function gen_node_details(data) {
+    var body = data.popup;
+    var graph_id = data.go_function_id;
+    if (graph_id) {
+        body = '<b>Related Graphs</b><br/>'
+            + '<a href="[% request.uri_base %]/ppi/' + graph_id
+            + '" target="_blank">'
+            + graph_id + '</a><hr/>' + body;
+    }
+    return body;
+}
+
 function qtip_data(evt) {
+    var data = evt.target.data;
+    var body = gen_node_details(data);
+    body = '<div style="width:200px; height:150; overflow:auto">'
+        + body + '</div>';
     return {
         content: {
-            text: '<div style="width:200px; height:150; overflow:auto">'
-                    + evt.target.data.popup
-                    + '</div>',
+            text: body,
             title: {
-                text: evt.target.data.label,
+                text: data.label,
                 button: 'X'
             }
         },
@@ -84,15 +108,31 @@ vis.ready(function() {
         //$('#node_details').fadeOut();
     });
     vis.addListener("mouseover", "nodes", function(evt) {
-        var target = evt.target;
-        $('#node_details').html(target.data.popup).fadeIn();
+        var data = evt.target.data;
+        $('#node_details').html(gen_node_details(data)).fadeIn();
         //var q = qtip_data(evt);
-        //q['content']['text'] = target.data.hover;
+        //q['content']['text'] = data.hover;
         //$('#' + div_id).qtip(q);
         //console.log(xx + ', ' + yy)
         //console.log($('#' + div_id).offsetLeft);
     });
     vis.addListener("click", "nodes", function(evt) {
+        var data = evt.target.data;
+        var graph_id = data.graph_id;
+        if (graph_id) {
+            window.location = graph_id;
+            return;
+        }
+        /*
+        var go_id = data.go_function_id;
+        if (go_id) {
+            window.open('[% request.uri_base %]/ppi/' + go_id);
+            return;
+        }
+        */
+        $('#' + div_id).qtip(qtip_data(evt));
+    });
+    vis.addListener("click", "edges", function(evt) {
         var target = evt.target;
         var graph_id = target.data.graph_id;
         if (graph_id) {
@@ -105,10 +145,13 @@ vis.ready(function() {
     vis.nodeTooltipsEnabled(true);
 });
 
-var metadata;
 $(function() {
     $.ajax({
+        [% IF is_ppi %]
+        url: "[% request.uri_base %]/ppi/[% graph_id %]",
+        [% ELSE %]
         url: "[% request.uri_base %]/graphs/[% graph_id %].[% graph_format %]",
+        [% END %]
         dataType: 'text',
         error: function(xhr, text, err) { 
             alert('ajax error: ' + text);
@@ -130,6 +173,9 @@ $(function() {
                 visualStyle: {
                     nodes: {
                         tooltipText: "${tooltip}",
+                        color: { passthroughMapper: { attrName: 'color' } },
+                        size:  { passthroughMapper: { attrName: 'size'  } },
+                        shape: { passthroughMapper: { attrName: 'shape' } }
                     },
                     edges: {
                         width: { passthroughMapper: { attrName: 'width' } }
@@ -147,6 +193,6 @@ $(function() {
 Graph <span id="graph_id"> [% graph_id %] </span>
 </h1>
 
-<div id="cytoscapeweb" style="width: 600px; height: 450px;">
+<div id="cytoscapeweb" style="width: 600px; height: 600px;">
     Loading graph ...
 </div>
