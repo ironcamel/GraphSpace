@@ -3,6 +3,9 @@
 <script type="text/javascript" src="[% request.uri_base %]/js/cytoscape_web/cytoscapeweb.min.js"></script>
 <script type="text/javascript" src="[% request.uri_base %]/js/qtip.js"></script>
 
+<script type="text/javascript" src="[% request.uri_base %]/js/jquery-ui/js/jquery-ui-1.8.12.custom.min.js"></script>
+<link type="text/css" href="[% request.uri_base %]/js/jquery-ui/css/ui-lightness/jquery-ui-1.8.12.custom.css" rel="Stylesheet" />	
+
 <script type="text/javascript">
 
 function get_graph(graph_id) {
@@ -158,7 +161,7 @@ $(function() {
         },
         success: function(data) {
             var graph = data;
-            [% IF graph_format == 'json' %]
+            [% IF graph_format == 'json' or is_ppi %]
             data = JSON.parse(data);
             graph = data['graph'];
             var metadata = data['metadata'];
@@ -166,6 +169,13 @@ $(function() {
                 $('#graph_details').html(metadata['graph_details']);
                 $('#graph_details_cont').show();
             }
+            var nodes_for_search = $.map(graph.data.nodes, function(n) {
+                return n.id
+            });
+            $('#search_inp').autocomplete({
+                source: nodes_for_search
+            });
+            console.log(nodes_for_search);
             [% END %]
             //console.log(data);
             vis.draw({
@@ -184,6 +194,7 @@ $(function() {
             });
         }
     });
+
 });
 
 

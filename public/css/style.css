@@ -247,11 +247,11 @@ code, tt {
 
 .tag_cont {
 /*
-    display:inline;
-    */
+*/
     border:1px solid blue;
+    border-radius: 6px;
     background-color:#ffa;
     margin: 3px 6px;
-    padding: 3px;
+    padding: 3px 10px;
     float: left;
 }

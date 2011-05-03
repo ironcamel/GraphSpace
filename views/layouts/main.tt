@@ -3,6 +3,7 @@
 <meta http-equiv="Content-type" content="text/html; charset=[% settings.charset %]" />
 <title>Graph Space</title>
 <link rel="stylesheet" href="[% request.uri_base %]/css/style.css" />
+<script type="text/javascript" src="[% request.uri_base %]/js/graph-space.js"></script>
 <script type="text/javascript" src="[% request.uri_base %]/js/jquery.js"></script>
 <script>
 function delete_tag(tag) {
@@ -68,7 +69,7 @@ function delete_tag(tag) {
         </ul>
         [% IF graph_id %]
         <input id="new_tag" type="text" name="new_tag" value=""/>
-        <input id="add_tag" type="button" name="add_tag" value="Add Tag">
+        <input id="add_tag" type="button" name="add_tag" value="Add Tag"/>
         <script>
         $('#add_tag').click(function() {
             var tag = $('#new_tag').val();
@@ -99,6 +100,35 @@ function delete_tag(tag) {
         </script>
         [% END %]
     </li>
+    [% IF graph_id %]
+    <li>
+        <h3>Search</h3>
+        <input id="search_inp" type="text" name="search" value="" />
+        <input id="search_btn" type="button" name="foo" value="Search" />
+        <input id="clear_btn" type="button" name="foo" value="Clear" />
+        <script>
+        $('#clear_btn').click(function() {
+            vis.visualStyleBypass(null);
+        });
+        $('#search_btn').click(function() {
+            var search_term = $('#search_inp').val();
+            console.log(search_term);
+            //vis.select([node]);
+ 
+            var bypass = { nodes: { }, edges: { } };
+            var props = { 
+                color: '#F00',
+                //labelFontSize: 16,
+                //labelFontColor: "#ff0000",
+                labelFontWeight: "bold"
+            };
+            bypass['nodes'][search_term] = props;
+            vis.visualStyleBypass(bypass);
+ 
+        });
+        </script>
+    </li>
+    [% END %]
     <!--
     <li>
         <a href="/admin" target="_blank">Admin</a>

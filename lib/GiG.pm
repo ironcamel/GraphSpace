@@ -7,7 +7,7 @@ use Dancer::Plugin::Ajax;
 use Dancer::Plugin::DBIC;
 use File::Slurp qw(read_file);
 
-get '/' => sub { redirect '/graphs' };
+get '/' => sub { redirect uri_for '/graphs' };
 
 get '/admin' => sub { template 'admin' };
 
@@ -161,6 +161,8 @@ sub get_ppi {
                     map {
                         id => $_,
                         label => $_,
+                        popup => "<a target='_blank' href='http://www.yeastgenome.org/cgi-bin/locus.fpl?locus=$_'>$_</a>",
+                        tooltip => $_,
                         size => 25,
                     }, @{$ppi->{nodes}}
                 ],
