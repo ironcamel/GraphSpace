@@ -76,7 +76,7 @@ del '/graphs/:graph_id/tags/:tag' => sub {
     return 1;
 };
 
-get '/foo' => sub { template 'foo' };
+get '/foo' => sub { template 'foo' => {}, {layout => 0}};
 
 get '/api/graphs/:graph_id.:format' => sub {
     my $graph_id = params->{graph_id};

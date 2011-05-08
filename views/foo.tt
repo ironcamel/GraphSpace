@@ -1,113 +1,59 @@
-<script type="text/javascript" src="[% base_path %]/js/cytoscape_web/json2.min.js"></script>
-<script type="text/javascript" src="[% base_path %]/js/cytoscape_web/AC_OETags.min.js"></script>
-<script type="text/javascript" src="[% base_path %]/js/cytoscape_web/cytoscapeweb.min.js"></script>
-<script type="text/javascript" src="[% base_path %]/js/qtip.js"></script>
+<html>
+<head>
+<title>Foo</title>
+<link rel="stylesheet" href="[% request.uri_base %]/css/reset.css" />
+<link rel="stylesheet" href="[% request.uri_base %]/css/text.css" />
+<link rel="stylesheet" href="[% request.uri_base %]/css/960.css" />
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/smoothness/jquery-ui.css" />
+<!--
+-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
+    
+<style type="text/css" media="screen">
+.acc {
+    margin-bottom: 10px;
+}
+.acc h3 {
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
 
-    <h1>Foo</h1>
-    <input id="qtip_btn" type="button" name="foo" value="qtip">
-    <div id="cytoscapeweb" style="width: 400px; height: 300px;">
-        Loading graph ...
+<div class="container_12">
+  <div class="grid_12">
+    <h1>Graph Space</h1>
+  </div>
+
+  <div class="clear"></div>
+
+  <div class="grid_9">
+  hi
+  </div>
+
+  <div class="grid_3">
+    <div id="acc1" class="acc">
+      <h3><a href="#">Graph Details</a></h3>
+      <div>Nice Graph</div>
     </div>
-
-<script type="text/javascript">
-var vis;
-window.onload=function() {
-
-    $('#qtip_btn').qtip({
-        content: 'This is an active list element',
-        show: 'mouseover',
-        hide: 'mouseout'
+    <div id="acc2" class="acc">
+      <h3><a href="#">Node Details</a></h3>
+      <div>Nice Node</div>
+    </div>
+    <script>
+    $(function() {
+        //$( "#accordion" ).accordion();
+        $( "div.acc" ).accordion({collapsible: true});
     });
+    </script>
+  </div>
 
-    var div_id = "cytoscapeweb";
-    
-    var network_json = {
-        // you need to specify a data schema for custom attributes!
-        dataSchema: {
-            nodes: [
-                { name: "label", type: "string" },
-                { name: "foo", type: "string" },
-                { name: "zoo", type: "string" },
-            ],
-            edges: [ { name: "label", type: "string" },
-                     { name: "bar", type: "string" }
-            ]
-        },
-        // NOTE the custom attributes on nodes and edges
-        data: {
-            nodes: [ { id: "1", label: "1", foo: "Is this the real life?" },
-                     { id: "2", label: "2", foo: "Is this just fantasy?" },
-                     { id: "3", label: "3", foo: "aaa" }
-            ],
-            edges: [ { id: "2to1", target: "1", source: "2", label: "2 to 1", bar: "Caught in a landslide..." }
-            ]
-        }
-    };
-    
-    // initialization options
-    var options = {
-        swfPath: "[% base_path %]/swf/CytoscapeWeb",
-        flashInstallerPath: "[% base_path %]/swf/playerProductInstall"
-    };
-    
-    // init and draw
-    vis = new org.cytoscapeweb.Visualization(div_id, options);
-    vis.ready(function() {
-        //vis.nodeTooltipsEnabled(true);
-        vis.addListener("click", "nodes", function(evt) {
-            //var target = evt.target;
-            //var graph_id = target.data.graph_id;
-            $('#' + div_id).qtip({
-                content: {
-                    text: evt.target.data.foo,
-                    title: {
-                        text: '<div> hi </div>',
-                        button: 'X'
-                    }
-                },
-                position: {
-                    corner: {
-                        target: "topLeft",
-                        tooltip: "bottomMiddle"
-                    },
-                    adjust: {
-                        x: evt.mouseX,
-                        y: evt.mouseY
-                    }
-                },
-                show: {
-                    delay: 0,
-                    when: false,
-                    effect: { type: "fade", length: 0 },
-                    ready: true // Show the tooltip when ready
-                },
-                hide: {
-                    delay: 0,
-                    effect: { type: "fade", length: 1000 },
-                    when: { event: "unfocus" },
-                    fixed: true
-                },
-                style: {
-                   border: { width: 1, radius: 6 },
-                   textAlign: 'left',
-                   //tip: true,
-                   name: 'light'
-                } 
-            });
-        }); // vis.addListener
-    }); // vis.ready
+</div>
 
-    vis.draw({
-        network: network_json,
-        visualStyle: {
-            nodes: {
-                tooltipText: "${foo}",
-                labelVerticalAnchor: 'bottom'
-            }
-        }
-    });
-};
+</body>
+</html>
 
-
-</script>
-
+<!--
+ vim:ft=html:sw=2:sts=2:ts=2
+-->

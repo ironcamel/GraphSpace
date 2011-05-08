@@ -1,0 +1,31 @@
+
+#tags {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+li {
+    list-style-type: none;
+}
+li.tag_cont {
+/*
+    border-radius: 6px;
+*/
+    border:2px solid #999;
+    background-color: #ddd;
+    margin: 4px 3px;
+    padding: 3px 6px;
+    float: left;
+    list-style-type: none;
+    font-size: .8em;
+}
+
+div.accordion {
+    margin-bottom: 10px;
+}
+div.accordion h3 {
+    font-weight:bold;
+}
+div.accordion div {
+    font-size: .9em;
+}

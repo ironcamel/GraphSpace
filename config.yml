@@ -1,6 +1,6 @@
 appname: Graph-Space
 layout: main
-logger: "file"
+logger: file
 #logger: console
 
 template: template_toolkit

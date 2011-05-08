@@ -1,10 +1,17 @@
 <html>
 <head>
-<meta http-equiv="Content-type" content="text/html; charset=[% settings.charset %]" />
 <title>Graph Space</title>
-<link rel="stylesheet" href="[% request.uri_base %]/css/style.css" />
+<link rel="stylesheet" href="[% request.uri_base %]/css/reset.css" />
+<link rel="stylesheet" href="[% request.uri_base %]/css/text.css" />
+<link rel="stylesheet" href="[% request.uri_base %]/css/960.css" />
+<link rel="stylesheet" href="[% request.uri_base %]/css/graph-space.css" />
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/smoothness/jquery-ui.css" />
+<!--
+-->
 <script type="text/javascript" src="[% request.uri_base %]/js/graph-space.js"></script>
-<script type="text/javascript" src="[% request.uri_base %]/js/jquery.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
+
 <script>
 function delete_tag(tag) {
     var url = '[% request.uri_base %]/graphs/[% graph_id %]/tags/' + tag;
@@ -25,13 +32,14 @@ function delete_tag(tag) {
 </script>
 </head>
 <body>
-<div id="page">
 
-<div id="content">
+<div class="container_12">
+  <div class="grid_8">
 
     <div id="header">
-        <h1>Graph Space</h1>
-        <h2>
+      <h1>Graph Space</h1>
+      <hr/>
+      <h3>
         <script type="text/javascript" charset="utf-8">
             var texts = [
                 'the final frontier',
@@ -39,129 +47,128 @@ function delete_tag(tag) {
                 '... to boldly go where no graph has gone before'
             ];
             var rand_index = Math.floor(Math.random() * texts.length)
-            document.write(texts[rand_index]);
+            //document.write(texts[rand_index]);
         </script>
-        </h2>
+      </h3>
     </div>
 
     <div id="content-body">
         [% content %]
     </div>
 
-</div> <!-- content -->
+  </div> <!-- grid_8 -->
 
-<div id="sidebar">
-    <ul id="sidebar-items">
-    <li>
-        <a href="[% request.uri_base %]/graphs">All Graphs</a>
-    </li>
-    <li>
-        <h3>Tags:</h3>
-        <ul id="tags" style="margin-bottom:4px">
-        [% FOREACH tag IN graph_tags %]
-            <li id="tag_[% tag.name %]" class="tag_cont">
-            <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]" target="_blank">[% tag.name %]</a>
-            [% IF graph_id %]
-            <a href="#" onclick="delete_tag('[% tag.name %]')">X</a>
-            [% END %]
-            </li>
-        [% END %]
-        </ul>
-        [% IF graph_id %]
-        <input id="new_tag" type="text" name="new_tag" value=""/>
-        <input id="add_tag" type="button" name="add_tag" value="Add Tag"/>
-        <script>
-        $('#add_tag').click(function() {
-            var tag = $('#new_tag').val();
-            if (!tag) {
-                alert('No tag entered');
-                return;
-            }
-            $.ajax({
-                type: 'POST',
-                url: '[% request.uri_base %]/graphs/[% graph_id %]/tags',
-                data: tag,
-                success: function(tag, textStatus) {
-                    console.log(textStatus);
-                    console.log(tag);
-                    $('#tags').append(
-                        '<li id="tag_' + tag.name + '" class="tag_cont">'
-                        + '<a href="[% request.uri_base %]/graphs?tag='
-                            + tag.name + '" target="_blank">'
-                            + tag.name + '</a> '
-                        + '<a href="#" onclick="delete_tag('
-                            + "'" + tag.name + "'" + ')">X</a>'
-                        + '</li>'
-                    );
-                },
-                dataType: 'json'
-            });
-        });
-        </script>
-        [% END %]
-    </li>
+  <div class="grid_4">
+    <div>
+      <a href="[% request.uri_base %]/graphs">All Graphs</a>
+    </div>
+    <div class="accordion">
+      <h3><a href="#">Tags:</a></h3>
+      <div>
+      <ul id="tags" style="margin-bottom:4px">
+      [% FOREACH tag IN graph_tags %]
+          <li id="tag_[% tag.name %]" class="tag_cont">
+          <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]" target="_blank">[% tag.name %]</a>
+          [% IF graph_id %]
+          <a href="#" onclick="delete_tag('[% tag.name %]')">X</a>
+          [% END %]
+          </li>
+      [% END %]
+      </ul>
+      [% IF graph_id %]
+      <input id="new_tag" type="text" name="new_tag" value=""/>
+      <input id="add_tag" type="button" name="add_tag" value="Add Tag"/>
+      <script>
+      $('#add_tag').click(function() {
+          var tag = $('#new_tag').val();
+          if (!tag) {
+              alert('No tag entered');
+              return;
+          }
+          $.ajax({
+              type: 'POST',
+              url: '[% request.uri_base %]/graphs/[% graph_id %]/tags',
+              data: tag,
+              success: function(tag, textStatus) {
+                  console.log(textStatus);
+                  console.log(tag);
+                  $('#tags').append(
+                      '<li id="tag_' + tag.name + '" class="tag_cont">'
+                      + '<a href="[% request.uri_base %]/graphs?tag='
+                          + tag.name + '" target="_blank">'
+                          + tag.name + '</a> '
+                      + '<a href="#" onclick="delete_tag('
+                          + "'" + tag.name + "'" + ')">X</a>'
+                      + '</li>'
+                  );
+              },
+              dataType: 'json'
+          });
+      });
+      </script>
+      [% END %]
+      </div>
+    </div>
     [% IF graph_id %]
-    <li>
-        <h3>Search</h3>
-        <input id="search_inp" type="text" name="search" value="" />
-        <input id="search_btn" type="button" name="foo" value="Search" />
-        <input id="clear_btn" type="button" name="foo" value="Clear" />
-        <script>
-        $('#clear_btn').click(function() {
-            vis.visualStyleBypass(null);
-        });
-        $('#search_btn').click(function() {
-            var search_term = $('#search_inp').val();
-            console.log(search_term);
-            //vis.select([node]);
- 
-            var bypass = { nodes: { }, edges: { } };
-            var props = { 
-                color: '#F00',
-                //labelFontSize: 16,
-                //labelFontColor: "#ff0000",
-                labelFontWeight: "bold"
-            };
-            bypass['nodes'][search_term] = props;
-            vis.visualStyleBypass(bypass);
- 
-        });
-        </script>
-    </li>
+    <div class="accordion">
+      <h3><a href="#">Search</a></h3>
+      <div>
+      <input id="search_inp" type="text" name="search" value="" />
+      <input id="search_btn" type="button" name="foo" value="Search" />
+      <input id="clear_btn" type="button" name="foo" value="Clear" />
+      <script>
+      $('#clear_btn').click(function() {
+          vis.visualStyleBypass(null);
+      });
+      $('#search_btn').click(function() {
+          var search_term = $('#search_inp').val();
+          console.log(search_term);
+          //vis.select([node]);
+
+          var bypass = { nodes: { }, edges: { } };
+          var props = { 
+              color: '#F00',
+              //labelFontSize: 16,
+              //labelFontColor: "#ff0000",
+              labelFontWeight: "bold"
+          };
+          bypass['nodes'][search_term] = props;
+          vis.visualStyleBypass(bypass);
+
+      });
+      </script>
+      </div>
+    </div>
     [% END %]
-    <!--
-    <li>
-        <a href="/admin" target="_blank">Admin</a>
-    </li>
-    <li>
-        <h3>Graph Spaces</h3>
-        <select name="graph_spaces" id="graph_spaces">
-        <option value="graph_space_1">graph space 1</option>
-        </select>
-    </li>
-    <li>
-        <h3>Graphs</h3>
-        <a href="[% request.uri_base %]/graphs">Graphs</a>
-    </li>
-    -->
     [% IF graph_id %]
-    <li id="graph_details_cont">
-        <h3>Graph Details</h3>
-        <div id="graph_details"></div>
-    </li>
-    <li>
-        <h3>Node Details</h3>
-        <div id="node_details"></div>
-    </li>
+    <div id="graph_details_cont" class="accordion">
+      <h3><a href="#">Graph Details</a></h3>
+      <div id="graph_details"></div>
+    </div>
+    <div class="accordion">
+      <h3><a href="#">Node Details</a></h3>
+      <div id="node_details"></div>
+    </div>
     [% END %]
-    </ul>
-</div> <!-- sidebar -->
+  </div> <!-- grid_4 -->
+  <script>
+  $(function() {
+      //$( "#accordion" ).accordion();
+      $('.accordion').accordion({
+          autoHeight: false,
+          collapsible: true
+      });
+  });
+  </script>
 
-</div> <!-- page -->
+  <div class="clear"></div>
 
-<div id="footer">
-Powered by <a href="http://perldancer.org/">Dancer</a> [% dancer_version %]
-</div>
+  <div class="grid_12">
+  <!--
+    Powered by <a href="http://perldancer.org/">Dancer</a> [% dancer_version %]
+  -->
+  </div>
+</div> <!-- container_12 -->
 
 </body>
 </html>
