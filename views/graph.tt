@@ -24,14 +24,6 @@ function get_ppi(go_id) {
 
 var div_id = "cytoscapeweb";
 
-//http://jquery-howto.blogspot.com/2009/07/identifying-locating-mouse-position-in.html
-//var xx = 0;
-//var yy = 0;
-//$().mousemove(function(e){
-//   xx = e.pageX - $('#' + div_id)[0].offsetLeft;
-//   yy = e.pageY - $('#' + div_id)[0].offsetTop;
-//});
-
 function gen_node_details(data) {
     var body = data.popup;
     var graph_id = data.go_function_id;
@@ -42,50 +34,6 @@ function gen_node_details(data) {
             + graph_id + '</a><hr/>' + body;
     }
     return body;
-}
-
-function qtip_data(evt) {
-    var data = evt.target.data;
-    var body = gen_node_details(data);
-    body = '<div style="width:200px; height:150; overflow:auto">'
-        + body + '</div>';
-    return {
-        content: {
-            text: body,
-            title: {
-                text: data.label,
-                button: 'X'
-            }
-        },
-        position: {
-            corner: {
-                target: "topLeft",
-                tooltip: "bottomMiddle"
-            },
-            adjust: {
-                x: evt.mouseX,
-                y: evt.mouseY
-            }
-        },
-        show: {
-            delay: 0,
-            when: false,
-            effect: { type: "fade", length: 0 },
-            ready: true // Show the tooltip when ready
-        },
-        hide: {
-            delay: 0,
-            effect: { type: "fade", length: 1000 },
-            when: { event: "unfocus" },
-            fixed: true
-        },
-        style: {
-           border: { width: 1, radius: 6 },
-           textAlign: 'left',
-           //tip: true,
-           name: 'light'
-        } 
-    };
 }
 
 var options = {
@@ -109,11 +57,6 @@ vis.ready(function() {
     vis.addListener("mouseover", "nodes", function(evt) {
         var data = evt.target.data;
         $('#node_details').html(gen_node_details(data)).fadeIn();
-        //var q = qtip_data(evt);
-        //q['content']['text'] = data.hover;
-        //$('#' + div_id).qtip(q);
-        //console.log(xx + ', ' + yy)
-        //console.log($('#' + div_id).offsetLeft);
     });
     vis.addListener("click", "nodes", function(evt) {
         var data = evt.target.data;
