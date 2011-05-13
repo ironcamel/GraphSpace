@@ -1,11 +1,14 @@
 <html>
 <head>
 <title>Foo</title>
+<!--
+-->
 <link rel="stylesheet" href="[% request.uri_base %]/css/reset.css" />
 <link rel="stylesheet" href="[% request.uri_base %]/css/text.css" />
 <link rel="stylesheet" href="[% request.uri_base %]/css/960.css" />
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/smoothness/jquery-ui.css" />
 <!--
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/ui-lightness/jquery-ui.css" />
 -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
@@ -29,7 +32,24 @@
   <div class="clear"></div>
 
   <div class="grid_9">
-  hi
+
+    hi
+    <script>
+    $(function() {
+      $( "#dialog" ).dialog({ autoOpen: false, show: 'fade'  });
+
+      $( "#d_btn" ).click(function() {
+        $( "#dialog" ).dialog( "open" );
+        return false;
+      });
+    });
+    </script>
+
+    <input type="button" id="d_btn" value="go" />
+    <div id="dialog" title="Basic dialog">
+      This is the default dialog which is useful for displaying information.
+    </div>
+
   </div>
 
   <div class="grid_3">

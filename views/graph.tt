@@ -1,8 +1,6 @@
 <script type="text/javascript" src="[% request.uri_base %]/js/cytoscape_web/json2.min.js"></script>
 <script type="text/javascript" src="[% request.uri_base %]/js/cytoscape_web/AC_OETags.min.js"></script>
 <script type="text/javascript" src="[% request.uri_base %]/js/cytoscape_web/cytoscapeweb.min.js"></script>
-<script type="text/javascript" src="[% request.uri_base %]/js/qtip.js"></script>
-
 
 <script type="text/javascript">
 
@@ -131,7 +129,9 @@ vis.ready(function() {
             return;
         }
         */
-        $('#' + div_id).qtip(qtip_data(evt));
+        $('#dialog').html(gen_node_details(data));
+        $('#dialog').dialog('option', 'title', data.label);
+        $('#dialog').dialog('open');
     });
     vis.addListener("click", "edges", function(evt) {
         var target = evt.target;
@@ -140,13 +140,17 @@ vis.ready(function() {
             window.location = graph_id;
             return;
         }
-        $('#' + div_id).qtip(qtip_data(evt));
+        var data = evt.target.data;
+        $('#dialog').html(gen_node_details(data));
+        $('#dialog').dialog('option', 'title', data.label);
+        $('#dialog').dialog('open');
     });
 
     vis.nodeTooltipsEnabled(true);
 });
 
 $(function() {
+    $('#dialog').dialog({ autoOpen: false, show: 'fade' });
     $.ajax({
         [% IF is_ppi %]
         url: "[% request.uri_base %]/ppi/[% graph_id %]",
@@ -204,4 +208,7 @@ Graph <span id="graph_id"> [% graph_id %] </span>
 
 <div id="cytoscapeweb" style="width: 600px; height: 600px;">
     Loading graph ...
+</div>
+
+<div id="dialog" style="max-height:400px; overflow:auto;">
 </div>
