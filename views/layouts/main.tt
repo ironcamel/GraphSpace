@@ -15,7 +15,6 @@
 <script>
 function delete_tag(tag) {
     var url = '[% request.uri_base %]/graphs/[% graph_id %]/tags/' + tag;
-    console.log(url);
     $.ajax({
         url: url,
         dataType: 'text',
@@ -24,12 +23,16 @@ function delete_tag(tag) {
             alert('ajax error: ' + text);
         },
         success: function(data) {
-            console.log('deleted ' + tag);
             $('#tag_' + tag).remove();
         }
     });
 }
 </script>
+<style>
+input {
+  margin-bottom: 5px;
+}
+</style>
 </head>
 <body>
 
@@ -76,11 +79,13 @@ function delete_tag(tag) {
       [% END %]
       </ul>
       [% IF graph_id %]
-      <input id="new_tag" type="text" name="new_tag" value=""/>
-      <input id="add_tag" type="button" name="add_tag" value="Add Tag"/>
+      <input id="new_tag" type="text" value=""/>
+      <button id="add_tag" type="button">Add Tag</button>
       <script>
+      $('#add_tag').button();
       $('#add_tag').click(function() {
-          var tag = $('#new_tag').val();
+          var new_tag = $('#new_tag');
+          var tag = new_tag.val();
           if (!tag) {
               alert('No tag entered');
               return;
@@ -90,8 +95,6 @@ function delete_tag(tag) {
               url: '[% request.uri_base %]/graphs/[% graph_id %]/tags',
               data: tag,
               success: function(tag, textStatus) {
-                  console.log(textStatus);
-                  console.log(tag);
                   $('#tags').append(
                       '<li id="tag_' + tag.name + '" class="tag_cont">'
                       + '<a href="[% request.uri_base %]/graphs?tag='
@@ -101,6 +104,7 @@ function delete_tag(tag) {
                           + "'" + tag.name + "'" + ')">X</a>'
                       + '</li>'
                   );
+                  new_tag.val('');
               },
               dataType: 'json'
           });
@@ -114,15 +118,18 @@ function delete_tag(tag) {
       <h3><a href="#">Search</a></h3>
       <div>
       <input id="search_inp" type="text" name="search" value="" />
-      <input id="search_btn" type="button" name="foo" value="Search" />
-      <input id="clear_btn" type="button" name="foo" value="Clear" />
+      <div>
+      <button id="search_btn" type="button">Search</button>
+      <button id="clear_btn" type="button">Clear</button>
+      </div>
       <script>
+      $('#clear_btn').button();
       $('#clear_btn').click(function() {
           vis.visualStyleBypass(null);
       });
+      $('#search_btn').button();
       $('#search_btn').click(function() {
           var search_term = $('#search_inp').val();
-          console.log(search_term);
           //vis.select([node]);
 
           var bypass = { nodes: { }, edges: { } };
