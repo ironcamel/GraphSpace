@@ -96,14 +96,44 @@ get '/api/graphs/:graph_id.:format' => sub {
     }
 };
 
-put '/api/graphs/:graph_id.:format' => sub {
-    my $graph_id = params->{graph_id};
-    schema->resultset('Graph')->update_or_create({
-        id               => $graph_id,
-        params->{format} => request->body,
+post '/api/graphs' => sub {
+    my $json = request->body;
+    my $data = from_json $json;
+    my $name = $data->{metadata}{name};
+    if (not $name) {
+        status 400;
+        return "The graph metadata must contain a name\n";
+    }
+    my $graph = schema->resultset('Graph')->create({
+        name => $name,
+        json => $json,
     });
     return "success: graph can be viewed at "
-        . uri_for("/graphs/$graph_id") . "\n";
+        . uri_for("/graphs/" . $graph->id) . "\n";
+};
+
+put '/api/graphs/:graph_id.:format' => sub {
+    my $graph_id = params->{graph_id};
+    my $graph = get_graph($graph_id);
+    if (not $graph) {
+        status 404;
+        return "No graph exists with an id of $graph_id\n";
+    }
+    $graph->update({ json => request->body });
+    return "Graph $graph_id was updated\n";
+};
+
+del '/api/graphs/:graph_id' => sub {
+    my $graph_id = params->{graph_id};
+    my $graph = get_graph($graph_id);
+    if (not $graph) {
+        status 404;
+        return "No graph exists with an id of $graph_id\n";
+    }
+    $graph->delete;
+    # TODO: Should we delete orphaned tags? DBIC takes care of deleting rows
+    # from relationship table.
+    return "Deleted graph $graph_id\n";
 };
 
 ajax '/ppi/:go_id' => sub {
