@@ -5,9 +5,8 @@
 <script type="text/javascript">
 
 function handle_click(evt) {
-    if (jump_to_graph(evt)) {
+    if (jump_to_graph(evt))
         return;
-    }
     show_popup(evt);
 }
 
@@ -148,7 +147,7 @@ $(function() {
 
 </script>
 
-Graph <span id="graph_id"> [% graph_id %] </span>
+Graph <span id="graph_name"> [% graph_name %] </span>
 
 <div id="cytoscapeweb" style="width: 600px; height: 600px;">
     Loading graph ...

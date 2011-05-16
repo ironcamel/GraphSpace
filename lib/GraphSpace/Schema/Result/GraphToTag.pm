@@ -7,13 +7,13 @@ __PACKAGE__->table("graph_to_tag");
 
 __PACKAGE__->add_columns(
     graph_id => {
-        data_type      => "text",
+        data_type      => 'integer',
         default_value  => 0,
         is_foreign_key => 1,
         is_nullable    => 0,
     },
     tag_id => {
-        data_type      => "integer",
+        data_type      => 'integer',
         default_value  => 0,
         is_foreign_key => 1,
         is_nullable    => 0,

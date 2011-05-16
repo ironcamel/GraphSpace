@@ -1,20 +1,35 @@
-CREATE TABLE graph (
+CREATE TABLE user (
     id TEXT primary key,
+    password TEXT,
+    name TEXT,
+    email TEXT
+);
+
+CREATE TABLE graph (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
     json TEXT,
-    graphml TEXT
+    graphml TEXT,
+    user_id TEXT,
+    FOREIGN KEY(user_id) REFERENCES user(id)
 );
 
 CREATE TABLE graph_tag (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	name TEXT
+	name TEXT UNIQUE
 );
 
 CREATE TABLE graph_to_tag (
-	graph_id TEXT,
+	graph_id INTEGER,
 	tag_id INTEGER,
-	PRIMARY KEY (graph_id, tag_id)
+	PRIMARY KEY (graph_id, tag_id),
+    FOREIGN KEY(graph_id) REFERENCES graph(id),
+    FOREIGN KEY(tag_id) REFERENCES graph(id)
 );
 
+/*
+insert into user values (1, 'test', 'test', 'test');
+insert into user values (2, 'arjun', 'arjun', 'Arjun');
 INSERT INTO graph(id, graphml) VALUES('1','<graphml>
   <key id="label" for="all" attr.name="label" attr.type="string"/>
   <key id="graph_id" for="all" attr.name="graph_id" attr.type="string"/>
@@ -131,3 +146,4 @@ INSERT INTO graph(id, json) VALUES('5', '{
     "metadata": { }
 }');
 
+*/

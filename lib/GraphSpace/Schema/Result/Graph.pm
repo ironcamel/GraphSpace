@@ -6,8 +6,10 @@ use warnings;
 __PACKAGE__->table('graph');
 
 __PACKAGE__->add_columns(
-    id => { data_type => 'text', is_nullable => 0 },
-    json => { data_type => 'text', is_nullable => 1 },
+    id      => { data_type => 'integer', is_auto_increment => 1,
+                 is_nullable => 0 },
+    name    => { data_type => 'text', is_nullable => 1 },
+    json    => { data_type => 'text', is_nullable => 1 },
     graphml => { data_type => 'text', is_nullable => 1 },
 );
 
