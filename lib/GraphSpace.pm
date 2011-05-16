@@ -1,4 +1,4 @@
-package GiG;
+package GraphSpace;
 use Dancer ':syntax';
 
 our $VERSION = '0.0001';
