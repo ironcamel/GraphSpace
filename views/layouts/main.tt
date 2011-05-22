@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="[% request.uri_base %]/css/text.css" />
 <link rel="stylesheet" href="[% request.uri_base %]/css/960.css" />
 <link rel="stylesheet" href="[% request.uri_base %]/css/graph-space.css" />
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/smoothness/jquery-ui.css" />
 <!--
 -->
 <script src="[% request.uri_base %]/js/graph-space.js"></script>
@@ -78,6 +78,7 @@ $(function() {
   -->
   </div>
 </div> <!-- container_12 -->
+  <div class="clear"></div>
 
 </body>
 </html>

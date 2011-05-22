@@ -208,33 +208,33 @@ $(function() {
   <div class="accordion">
     <h3><a href="#">Search</a></h3>
     <div>
-    <input id="search_inp" type="text" name="search" value="" />
-    <div>
-    <button id="search_btn" type="button">Search</button>
-    <button id="clear_btn" type="button">Clear</button>
-    </div>
-    <script>
-    $('#clear_btn').button();
-    $('#clear_btn').click(function() {
-        vis.visualStyleBypass(null);
-    });
-    $('#search_btn').button();
-    $('#search_btn').click(function() {
-        var search_term = $('#search_inp').val();
-        //vis.select([node]);
+      <input id="search_inp" type="text" name="search" value="" />
+      <div>
+        <button id="search_btn" type="button">Search</button>
+        <button id="clear_btn" type="button">Clear</button>
+      </div>
+      <script>
+      $('#clear_btn').button();
+      $('#clear_btn').click(function() {
+          vis.visualStyleBypass(null);
+      });
+      $('#search_btn').button();
+      $('#search_btn').click(function() {
+          var search_term = $('#search_inp').val();
+          //vis.select([node]);
 
-        var bypass = { nodes: { }, edges: { } };
-        var props = { 
-            color: '#F00',
-            //labelFontSize: 16,
-            //labelFontColor: "#ff0000",
-            labelFontWeight: "bold"
-        };
-        bypass['nodes'][search_term] = props;
-        vis.visualStyleBypass(bypass);
+          var bypass = { nodes: { }, edges: { } };
+          var props = { 
+              color: '#F00',
+              //labelFontSize: 16,
+              //labelFontColor: "#ff0000",
+              labelFontWeight: "bold"
+          };
+          bypass['nodes'][search_term] = props;
+          vis.visualStyleBypass(bypass);
 
-    });
-    </script>
+      });
+      </script>
     </div>
   </div>
   <div id="graph_details_cont" class="accordion">

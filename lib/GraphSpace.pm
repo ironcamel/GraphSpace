@@ -158,8 +158,8 @@ get '/ppi/:go_id' => sub {
 };
 
 get '/tags' => sub {
-    my @tags = schema->resultset('GraphTag')->all;
-    return join ' ', map $_->name, @tags;
+    my @tags = map { $_->name } schema->resultset('GraphTag')->all;
+    return to_json \@tags;
 };
 
 sub get_graph { schema->resultset('Graph')->find($_[0]) }

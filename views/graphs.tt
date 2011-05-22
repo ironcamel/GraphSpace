@@ -1,3 +1,16 @@
+<script>
+$(function() {
+    $.ajax({
+        url: '[% request.uri_base %]/tags',
+        success: function(data) {
+            //console.log(data);
+            $('#search_inp').autocomplete({ source: data });
+        },
+        dataType: 'json'
+    });
+});
+</script>
+
 <div class="grid_8">
   <div id="content-body">
     <ul>
@@ -11,15 +24,26 @@
 </div> <!-- grid_8 -->
 
 <div class="grid_4">
+
+  <div class="accordion">
+    <h3><a href="#">Search</a></h3>
+    <div>
+      <input id="search_inp" type="text" name="search" value="" />
+      <button id="search_btn" type="button">Search</button>
+    </div>
+  </div>
+
   <div class="accordion">
     <h3><a href="#">Tags:</a></h3>
     <div>
-    <ul id="tags" style="margin-bottom:4px">
-    [% FOREACH tag IN graph_tags %]
-      <li id="tag_[% tag.name %]" class="tag_cont">
-        <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]">[% tag.name %]</a>
-      </li>
-    [% END %]
-    </ul>
+      <ul id="tags" style="margin-bottom:4px">
+      [% FOREACH tag IN graph_tags %]
+        <li id="tag_[% tag.name %]" class="tag_cont">
+          <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]">[% tag.name %]</a>
+        </li>
+      [% END %]
+      </ul>
+    </div>
   </div>
+
 </div>
