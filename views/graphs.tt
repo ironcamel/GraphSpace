@@ -1,8 +1,25 @@
+<div class="grid_8">
+  <div id="content-body">
+    <ul>
+    [% FOREACH g IN graphs %]
+        <li>
+        <a href="[% request.uri_base %]/graphs/[% g.id %]">Graph [% g.name %]</a>
+        </li>
+    [% END %]
+    </ul>
+  </div>
+</div> <!-- grid_8 -->
 
-<ul>
-[% FOREACH g IN graphs %]
-    <li>
-    <a href="[% request.uri_base %]/graphs/[% g.id %]">Graph [% g.name %]</a>
-    </li>
-[% END %]
-</ul>
+<div class="grid_4">
+  <div class="accordion">
+    <h3><a href="#">Tags:</a></h3>
+    <div>
+    <ul id="tags" style="margin-bottom:4px">
+    [% FOREACH tag IN graph_tags %]
+      <li id="tag_[% tag.name %]" class="tag_cont">
+        <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]">[% tag.name %]</a>
+      </li>
+    [% END %]
+    </ul>
+  </div>
+</div>

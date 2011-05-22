@@ -147,11 +147,102 @@ $(function() {
 
 </script>
 
-Graph <span id="graph_name"> [% graph_name %] </span>
 
-<div id="cytoscapeweb" style="width: 600px; height: 600px;">
-    Loading graph ...
-</div>
+<div id="dialog" style="max-height:400px; overflow:auto;"></div>
 
-<div id="dialog" style="max-height:400px; overflow:auto;">
-</div>
+<div class="grid_8">
+  <div id="content-body">
+    Graph <span id="graph_name"> [% graph_name %] </span>
+
+    <div id="cytoscapeweb" style="width: 600px; height: 600px;">
+        Loading graph ...
+    </div>
+  </div>
+</div> <!-- grid_8 -->
+
+<div class="grid_4">
+  <div class="accordion">
+    <h3><a href="#">Tags:</a></h3>
+    <div>
+    <ul id="tags" style="margin-bottom:4px">
+    [% FOREACH tag IN graph_tags %]
+        <li id="tag_[% tag.name %]" class="tag_cont">
+        <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]" target="_blank">[% tag.name %]</a>
+        <a href="#" onclick="delete_tag('[% tag.name %]')">X</a>
+        </li>
+    [% END %]
+    </ul>
+    <input id="new_tag" type="text" value=""/>
+    <button id="add_tag" type="button">Add Tag</button>
+    <script>
+    $('#add_tag').button();
+    $('#add_tag').click(function() {
+        var new_tag = $('#new_tag');
+        var tag = new_tag.val();
+        if (!tag) {
+            alert('No tag entered');
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '[% request.uri_base %]/graphs/[% graph_id %]/tags',
+            data: tag,
+            success: function(tag, textStatus) {
+                $('#tags').append(
+                    '<li id="tag_' + tag.name + '" class="tag_cont">'
+                    + '<a href="[% request.uri_base %]/graphs?tag='
+                        + tag.name + '" target="_blank">'
+                        + tag.name + '</a> '
+                    + '<a href="#" onclick="delete_tag('
+                        + "'" + tag.name + "'" + ')">X</a>'
+                    + '</li>'
+                );
+                new_tag.val('');
+            },
+            dataType: 'json'
+        });
+    });
+    </script>
+    </div>
+  </div>
+  <div class="accordion">
+    <h3><a href="#">Search</a></h3>
+    <div>
+    <input id="search_inp" type="text" name="search" value="" />
+    <div>
+    <button id="search_btn" type="button">Search</button>
+    <button id="clear_btn" type="button">Clear</button>
+    </div>
+    <script>
+    $('#clear_btn').button();
+    $('#clear_btn').click(function() {
+        vis.visualStyleBypass(null);
+    });
+    $('#search_btn').button();
+    $('#search_btn').click(function() {
+        var search_term = $('#search_inp').val();
+        //vis.select([node]);
+
+        var bypass = { nodes: { }, edges: { } };
+        var props = { 
+            color: '#F00',
+            //labelFontSize: 16,
+            //labelFontColor: "#ff0000",
+            labelFontWeight: "bold"
+        };
+        bypass['nodes'][search_term] = props;
+        vis.visualStyleBypass(bypass);
+
+    });
+    </script>
+    </div>
+  </div>
+  <div id="graph_details_cont" class="accordion">
+    <h3><a href="#">Graph Details</a></h3>
+    <div id="graph_details"></div>
+  </div>
+  <div class="accordion">
+    <h3><a href="#">Node Details</a></h3>
+    <div id="node_details"></div>
+  </div>
+</div> <!-- grid_4 -->

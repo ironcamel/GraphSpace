@@ -1,4 +1,14 @@
 
+#title {
+    font-weight: bold;
+    font-size: 2em;
+    margin: 0 10px;
+}
+
+#header hr {
+    margin-top: 5px;
+}
+
 #tags {
     margin-left: 0;
     padding-left: 0;
