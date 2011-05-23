@@ -46,8 +46,7 @@ get '/graphs/:graph_id' => sub {
         return "The graph [$graph_id] does not exist\n";
     };
     template graph => {
-        graph_id     => $graph_id,
-        graph_name   => $graph->name,
+        graph        => $graph,
         graph_format => $graph->json ? 'json' : 'graphml',
         graph_tags   => [ $graph->tags ],
     };

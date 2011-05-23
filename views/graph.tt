@@ -98,9 +98,9 @@ $(function() {
     $('#dialog').dialog({ autoOpen: false, show: 'fade' });
     $.ajax({
         [% IF is_ppi %]
-        url: "[% request.uri_base %]/ppi/[% graph_id %]",
+        url: "[% request.uri_base %]/ppi/[% graph.id %]",
         [% ELSE %]
-        url: "[% request.uri_base %]/graphs/[% graph_id %].[% graph_format %]",
+        url: "[% request.uri_base %]/graphs/[% graph.id %].[% graph_format %]",
         [% END %]
         dataType: 'text',
         error: function(xhr, text, err) { 
@@ -114,7 +114,6 @@ $(function() {
             var metadata = data['metadata'];
             if (metadata && metadata['graph_details']) {
                 $('#graph_details').html(metadata['graph_details']);
-                $('#graph_details_cont').show();
             }
             var nodes_for_search = $.map(graph.data.nodes, function(n) {
                 return n.id
@@ -151,16 +150,23 @@ $(function() {
 <div id="dialog" style="max-height:400px; overflow:auto;"></div>
 
 <div class="grid_8">
-  <div id="content-body">
-    Graph <span id="graph_name"> [% graph_name %] </span>
-
-    <div id="cytoscapeweb" style="width: 600px; height: 600px;">
-        Loading graph ...
-    </div>
-  </div>
+  <div id="cytoscapeweb"> Loading graph ...  </div>
 </div> <!-- grid_8 -->
 
 <div class="grid_4">
+
+  <div id="graph_details_cont" class="accordion">
+    <h3><a href="#">Graph Details</a></h3>
+    <div>
+      <b>id:</b> [% graph.id %] 
+      <br/>
+      <b>name:</b> [% graph.name %] 
+      <br/>
+      <b>description:</b>
+      <span id="graph_details"></span>
+    </div>
+  </div>
+
   <div class="accordion">
     <h3><a href="#">Tags:</a></h3>
     <div>
@@ -185,7 +191,7 @@ $(function() {
         }
         $.ajax({
             type: 'POST',
-            url: '[% request.uri_base %]/graphs/[% graph_id %]/tags',
+            url: '[% request.uri_base %]/graphs/[% graph.id %]/tags',
             data: tag,
             success: function(tag, textStatus) {
                 $('#tags').append(
@@ -205,8 +211,9 @@ $(function() {
     </script>
     </div>
   </div>
+
   <div class="accordion">
-    <h3><a href="#">Search</a></h3>
+    <h3><a href="#">Search Graph</a></h3>
     <div>
       <input id="search_inp" type="text" name="search" value="" />
       <div>
@@ -237,12 +244,10 @@ $(function() {
       </script>
     </div>
   </div>
-  <div id="graph_details_cont" class="accordion">
-    <h3><a href="#">Graph Details</a></h3>
-    <div id="graph_details"></div>
-  </div>
+
   <div class="accordion">
     <h3><a href="#">Node Details</a></h3>
     <div id="node_details"></div>
   </div>
+
 </div> <!-- grid_4 -->

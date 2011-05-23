@@ -60,7 +60,7 @@ $(function() {
 <div class="container_12">
 
   <div id="header" class="grid_12">
-    <span id="title">Graph Space</span>
+    <h1 id="title">Graph Space</h1>
     <a href="[% request.uri_base %]/graphs">Search</a>
     <a href="#" style="float:right">logout</a>
     <hr/>
@@ -70,15 +70,14 @@ $(function() {
 
   [% content %]
 
-  <div class="clear"></div>
-
-  <div class="grid_12">
   <!--
-    Powered by <a href="http://perldancer.org/">Dancer</a> [% dancer_version %]
-  -->
-  </div>
-</div> <!-- container_12 -->
   <div class="clear"></div>
+  <div class="grid_12">
+    Powered by <a href="http://perldancer.org/">Dancer</a> [% dancer_version %]
+  </div>
+  -->
+
+</div> <!-- container_12 -->
 
 </body>
 </html>
