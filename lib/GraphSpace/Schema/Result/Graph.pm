@@ -11,6 +11,7 @@ __PACKAGE__->add_columns(
     name    => { data_type => 'text', is_nullable => 1 },
     json    => { data_type => 'text', is_nullable => 1 },
     graphml => { data_type => 'text', is_nullable => 1 },
+    user_id => { data_type => 'text', is_nullable => 1 },
 );
 
 __PACKAGE__->set_primary_key('id');

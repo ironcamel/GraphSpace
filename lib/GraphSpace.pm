@@ -7,6 +7,10 @@ use Dancer::Plugin::Ajax;
 use Dancer::Plugin::DBIC;
 use File::Slurp qw(read_file);
 
+before sub {
+    var api_user => request->env->{REMOTE_USER};
+};
+
 get '/' => sub { redirect uri_for '/graphs' };
 
 get '/admin' => sub { template 'admin' };
@@ -104,8 +108,9 @@ post '/api/graphs' => sub {
         return "The graph metadata must contain a name\n";
     }
     my $graph = schema->resultset('Graph')->create({
-        name => $name,
-        json => $json,
+        name    => $name,
+        json    => $json,
+        user_id => var('api_user'),
     });
     return "success: graph can be viewed at "
         . uri_for("/graphs/" . $graph->id) . "\n";
