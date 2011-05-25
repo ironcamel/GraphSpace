@@ -98,7 +98,7 @@ $(function() {
     $('#dialog').dialog({ autoOpen: false, show: 'fade' });
     $.ajax({
         [% IF is_ppi %]
-        url: "[% request.uri_base %]/ppi/[% graph.id %]",
+        url: "[% request.uri_base %]/ppi/[% graph_id %]",
         [% ELSE %]
         url: "[% request.uri_base %]/graphs/[% graph.id %].[% graph_format %]",
         [% END %]
