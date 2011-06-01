@@ -9,6 +9,17 @@ use File::Slurp qw(read_file);
 
 before sub {
     var api_user => request->env->{REMOTE_USER};
+    #debug '*** referer: '. request->header('referer');
+
+    if (! session('user') && request->path_info !~ m{^/login}) {
+        var requested_path => request->path_info;
+        request->path_info('/login');
+    }
+};
+
+before_template sub {
+    my $tokens = shift;
+    $tokens->{user_id} = session 'user';
 };
 
 get '/' => sub { redirect uri_for '/graphs' };
@@ -20,10 +31,34 @@ post '/admin' => sub {
     my $graph_id = params->{graph_name};
     my $content = $file->content;
     schema->resultset('Graph')->update_or_create({
-        id      => $graph_id,
-        graphml => $content,
+        id   => $graph_id,
+        json => $content,
     });
     redirect "/graphs/$graph_id";
+};
+
+get '/login' => sub {
+    template login => {
+        failed         => params->{failed},
+        requested_path => vars->{requested_path},
+    };
+};
+
+post '/login' => sub {
+    my $username = params->{username};
+    my $password = params->{password};
+    my $user = schema->resultset('User')->find($username);
+    if ($user and $user->password eq $password) {
+        session user => $username;
+        redirect uri_for params->{requested_path};
+    } else {
+        redirect uri_for('/login') . '?failed=1';
+    }
+};
+
+get '/logout' => sub {
+    session->destroy;
+    redirect uri_for '/login';
 };
 
 get '/graphs' => sub {

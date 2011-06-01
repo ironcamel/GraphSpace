@@ -1,0 +1,30 @@
+
+<form action="[% request.uri_base %]/login" method="post">
+
+  <input type="hidden" name="requested_path" value="[% requested_path %]">
+  Test account login is test/test
+  [% IF failed %]
+  <div id="failed_msg">
+    username/login was invalid
+  </div>
+  [% END %]
+  <p>
+    <div>
+      <label for="username">username:</label>
+      <input id="username" type="text" name="username" value="">
+    </div>
+    <div>
+      <label for="password">password:</label>
+      <input id="password" type="password" name="password" value="">
+    </div>
+  </p>
+    
+  <button id="login_btn" type="submit">Login</button>
+
+</form>
+
+<script>
+$(function() {
+    $('#login_btn').button();
+});
+</script>

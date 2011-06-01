@@ -2,6 +2,8 @@ appname: Graph-Space
 layout: main
 logger: file
 #logger: console
+#session: Simple
+session: YAML
 
 template: template_toolkit
 engines:

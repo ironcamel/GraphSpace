@@ -8,6 +8,8 @@ $(function() {
         },
         dataType: 'json'
     });
+
+    $('#search_btn').button();
 });
 </script>
 

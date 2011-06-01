@@ -62,7 +62,14 @@ $(function() {
   <div id="header" class="grid_12">
     <h1 id="title">Graph Space</h1>
     <a href="[% request.uri_base %]/graphs">Search</a>
-    <a href="#" style="float:right">logout</a>
+
+    [% IF user_id %]
+    <span style="float:right"> 
+      Welcome [% user_id %]
+      <a href="[% request.uri_base %]/logout">logout</a>
+    </span>
+    [% END %]
+
     <hr/>
   </div>
 
