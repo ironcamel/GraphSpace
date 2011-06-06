@@ -11,7 +11,7 @@ before sub {
     var api_user => request->env->{REMOTE_USER};
     #debug '*** referer: '. request->header('referer');
 
-    if (! session('user') && request->path_info !~ m{^/login}) {
+    if (! session('user') && request->path_info !~ m{^/(login|help|api)}) {
         var requested_path => request->path_info;
         request->path_info('/login');
     }
@@ -142,9 +142,25 @@ post '/api/graphs' => sub {
         status 400;
         return "The graph metadata must contain a name\n";
     }
+    $data->{graph}{dataSchema} = {
+        nodes => [
+            { name => 'label', type => 'string' },
+            { name => 'popup', type => 'string' },
+            { name => 'tooltip', type => 'string' },
+            { name => 'color', type => 'string' },
+            { name => 'size', type => 'int' },
+            { name => 'shape', type => 'string' },
+            { name => 'go_function_id', type => 'string' },
+        ],
+        edges => [
+            { name => 'width', type => 'double' },
+            { name => 'label', type => 'string' },
+            { name => 'popup', type => 'string' },
+        ],
+    };
     my $graph = schema->resultset('Graph')->create({
         name    => $name,
-        json    => $json,
+        json    => to_json($data),
         user_id => var('api_user'),
     });
     return "success: graph can be viewed at "

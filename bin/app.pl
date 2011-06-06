@@ -16,5 +16,5 @@ builder {
 
 sub authen_cb {
     my($username, $password) = @_;
-    return $password eq 'arjun';
+    return $username eq 'arjun' || $username eq 'test';
 }
