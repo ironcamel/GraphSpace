@@ -65,7 +65,9 @@ get '/graphs' => sub {
     my $tag = params->{tag};
     my @graphs = $tag
         ? schema->resultset('GraphTag')->find({ name => $tag })->graphs
-        : schema->resultset('Graph')->all;
+            ->search({ user_id => session('user') }, { rows => 100 })
+        : schema->resultset('Graph')
+            ->search({ user_id => session('user') }, { rows => 100 });
     template graphs => {
         graphs => \@graphs,
         graph_tags => [ schema->resultset('GraphTag')->all ],
@@ -148,7 +150,7 @@ post '/api/graphs' => sub {
             { name => 'popup',   type => 'string' },
             { name => 'tooltip', type => 'string' },
             { name => 'color',   type => 'string' },
-            { name => 'size',    type => 'float' },
+            { name => 'size',    type => 'float'  },
             { name => 'shape',   type => 'string' },
             { name => 'go_function_id', type => 'string' },
         ],
