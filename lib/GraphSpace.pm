@@ -144,12 +144,12 @@ post '/api/graphs' => sub {
     }
     $data->{graph}{dataSchema} = {
         nodes => [
-            { name => 'label', type => 'string' },
-            { name => 'popup', type => 'string' },
+            { name => 'label',   type => 'string' },
+            { name => 'popup',   type => 'string' },
             { name => 'tooltip', type => 'string' },
-            { name => 'color', type => 'string' },
-            { name => 'size', type => 'int' },
-            { name => 'shape', type => 'string' },
+            { name => 'color',   type => 'string' },
+            { name => 'size',    type => 'float' },
+            { name => 'shape',   type => 'string' },
             { name => 'go_function_id', type => 'string' },
         ],
         edges => [

@@ -114,6 +114,7 @@ $(function() {
             var metadata = data['metadata'];
             if (metadata && metadata['graph_details']) {
                 $('#graph_details').html(metadata['graph_details']);
+                $('#graph_desc_cont').show();
             }
             var nodes_for_search = $.map(graph.data.nodes, function(n) {
                 return n.id
@@ -158,12 +159,12 @@ $(function() {
   <div id="graph_details_cont" class="accordion">
     <h3><a href="#">Graph Details</a></h3>
     <div>
-      <b>id:</b> [% graph.id %] 
-      <br/>
-      <b>name:</b> [% graph.name %] 
-      <br/>
-      <b>description:</b>
-      <span id="graph_details"></span>
+      <div> <b>id:</b> [% graph.id %] </div>
+      <div> <b>name:</b> [% graph.name %] </div>
+      <div id="graph_desc_cont" style="display:none">
+        <b>description:</b>
+        <span id="graph_details"></span>
+      </div>
     </div>
   </div>
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+use 5.10.1;
 use Dancer;
 use Plack::Builder;
 use GraphSpace;
@@ -16,5 +17,5 @@ builder {
 
 sub authen_cb {
     my($username, $password) = @_;
-    return $username eq 'arjun' || $username eq 'test';
+    return $username eq $password and $username ~~ [qw(arjun chrisp test)];
 }
