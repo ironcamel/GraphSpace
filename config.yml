@@ -4,6 +4,7 @@ logger: file
 #logger: console
 #session: Simple
 session: YAML
+serializer: JSON
 
 template: template_toolkit
 engines:

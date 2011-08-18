@@ -11,6 +11,7 @@ function handle_click(evt) {
 }
 
 function jump_to_graph(evt) {
+    return false;
     var data = evt.target.data;
     var graph_id = data.graph_id;
     if (graph_id) {
@@ -63,6 +64,17 @@ function gen_node_details(data) {
             + '" target="_blank">'
             + graph_id + '</a><hr/>' + body;
     }
+    graph_id = data.graph_id;
+    if (graph_id) {
+        body = '<b>Related Graphs</b><br/>'
+            + '<p>'
+            + '<a href="[% request.uri_base %]/graphs/' + graph_id
+            + '" target="_blank">'
+            + graph_id
+            + '</a>'
+            + '</p>'
+            + '<hr/>' + body;
+    }
     return body;
 }
 
@@ -91,7 +103,7 @@ vis.ready(function() {
     vis.addListener("click", "nodes", function(evt) { handle_click(evt) });
     vis.addListener("click", "edges", function(evt) { handle_click(evt) });
 
-    vis.nodeTooltipsEnabled(true);
+    //vis.nodeTooltipsEnabled(true);
 });
 
 $(function() {
@@ -112,9 +124,12 @@ $(function() {
             data = JSON.parse(data);
             graph = data['graph'];
             var metadata = data['metadata'];
-            if (metadata && metadata['graph_details']) {
-                $('#graph_details').html(metadata['graph_details']);
-                $('#graph_desc_cont').show();
+            if (metadata) {
+                var details = metadata['graph_details'] || metadata['details'];
+                if (details) {
+                    $('#graph_details').html(details);
+                    $('#graph_desc_cont').show();
+                }
             }
             var nodes_for_search = $.map(graph.data.nodes, function(n) {
                 return n.id
@@ -132,10 +147,12 @@ $(function() {
                         tooltipText: "${tooltip}",
                         color: { passthroughMapper: { attrName: 'color' } },
                         size:  { passthroughMapper: { attrName: 'size'  } },
-                        shape: { passthroughMapper: { attrName: 'shape' } }
+                        shape: { passthroughMapper: { attrName: 'shape' } },
+                        labelFontWeight: { passthroughMapper: { attrName: 'labelFontWeight' } }
                     },
                     edges: {
-                        width: { passthroughMapper: { attrName: 'width' } }
+                        width: { passthroughMapper: { attrName: 'width' } },
+                        color: { passthroughMapper: { attrName: 'color' } }
                     }
                 }
             });

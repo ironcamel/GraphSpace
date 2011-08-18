@@ -146,18 +146,22 @@ post '/api/graphs' => sub {
     }
     $data->{graph}{dataSchema} = {
         nodes => [
-            { name => 'label',   type => 'string' },
-            { name => 'popup',   type => 'string' },
-            { name => 'tooltip', type => 'string' },
-            { name => 'color',   type => 'string' },
-            { name => 'size',    type => 'float'  },
-            { name => 'shape',   type => 'string' },
+            { name => 'label',    type => 'string' },
+            { name => 'popup',    type => 'string' },
+            { name => 'tooltip',  type => 'string' },
+            { name => 'color',    type => 'string' },
+            { name => 'size',     type => 'float'  },
+            { name => 'shape',    type => 'string' },
+            { name => 'graph_id', type => 'int'    },
             { name => 'go_function_id', type => 'string' },
+            { name => 'labelFontWeight', type => 'string' },
         ],
         edges => [
             { name => 'width', type => 'double' },
             { name => 'label', type => 'string' },
             { name => 'popup', type => 'string' },
+            { name => 'color', type => 'string' },
+            { name => 'labelFontWeight', type => 'string' },
         ],
     };
     my $graph = schema->resultset('Graph')->create({
@@ -165,8 +169,13 @@ post '/api/graphs' => sub {
         json    => to_json($data),
         user_id => var('api_user'),
     });
-    return "success: graph can be viewed at "
-        . uri_for("/graphs/" . $graph->id) . "\n";
+    my $id = $graph->id;
+    status 201;
+    header location => uri_for("/api/graphs/$id");
+    return {
+        id  => $graph->id,
+        url => uri_for('/graphs/') . $id,
+    };
 };
 
 put '/api/graphs/:graph_id.:format' => sub {
@@ -187,10 +196,15 @@ del '/api/graphs/:graph_id' => sub {
         status 404;
         return "No graph exists with an id of $graph_id\n";
     }
+    if ($graph->user_id ne var('api_user')) {
+        status 403;
+        return to_json { error => "You can only delete your own graphs" };
+    }
+
     $graph->delete;
     # TODO: Should we delete orphaned tags? DBIC takes care of deleting rows
     # from relationship table.
-    return "Deleted graph $graph_id\n";
+    return { id => $graph_id };
 };
 
 ajax '/ppi/:go_id' => sub {
