@@ -178,7 +178,7 @@ post '/api/graphs' => sub {
     };
 };
 
-put '/api/graphs/:graph_id.:format' => sub {
+put '/api/graphs/:graph_id' => sub {
     my $graph_id = params->{graph_id};
     my $graph = get_graph($graph_id);
     if (not $graph) {

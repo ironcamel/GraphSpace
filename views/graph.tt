@@ -84,6 +84,7 @@ var options = {
 };
 
 var vis = new org.cytoscapeweb.Visualization(div_id, options);
+var metadata = {};
 
 vis.ready(function() {
     vis.addContextMenuItem("Select neighbors", "nodes", function (evt) { 
@@ -104,6 +105,10 @@ vis.ready(function() {
     vis.addListener("click", "edges", function(evt) { handle_click(evt) });
 
     //vis.nodeTooltipsEnabled(true);
+
+    if (metadata.layout) {
+        vis.layout(metadata.layout);
+    }
 });
 
 $(function() {
@@ -123,7 +128,7 @@ $(function() {
             [% IF graph_format == 'json' or is_ppi %]
             data = JSON.parse(data);
             graph = data['graph'];
-            var metadata = data['metadata'];
+            metadata = data['metadata'];
             if (metadata) {
                 var details = metadata['graph_details'] || metadata['details'];
                 if (details) {
