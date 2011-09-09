@@ -43,16 +43,6 @@ function get_graph(graph_id) {
     return xml;
 }
 
-function get_ppi(go_id) {
-    return $.ajax({
-        url: "[% request.uri_base %]/ppi/" + go_id,
-        dataType: 'text',
-        error: function(xhr, text, err) { 
-            alert('ajax error: ' + text);
-        },
-    }).responseText;
-}
-
 function add_data_schema(graph) {
     graph.dataSchema = {
        "nodes" : [
@@ -196,106 +186,8 @@ $(function() {
 
 <div id="dialog" style="max-height:400px; overflow:auto;"></div>
 
-<div class="grid_8">
+<div class="grid_12">
   <div id="cytoscapeweb"> Loading graph ...  </div>
-  <a href="[% request.path_info %]?size=large">large view</a>
-</div> <!-- grid_8 -->
+  <a href="[% request.path_info.remove('/large$') %]">normal view</a>
+</div>
 
-<div class="grid_4">
-
-  <div id="graph_details_cont" class="accordion">
-    <h3><a href="#">Graph Details</a></h3>
-    <div>
-      <div> <b>id:</b> [% graph.id %] </div>
-      <div> <b>name:</b> [% graph.name %] </div>
-      <div id="graph_desc_cont" style="display:none">
-        <b>description:</b>
-        <span id="graph_details"></span>
-      </div>
-    </div>
-  </div>
-
-  <div class="accordion">
-    <h3><a href="#">Tags:</a></h3>
-    <div>
-    <ul id="tags" style="margin-bottom:4px">
-    [% FOREACH tag IN graph_tags %]
-        <li id="tag_[% tag.name %]" class="tag_cont">
-        <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]" target="_blank">[% tag.name %]</a>
-        <a href="#" onclick="delete_tag('[% tag.name %]')">X</a>
-        </li>
-    [% END %]
-    </ul>
-    <input id="new_tag" type="text" value=""/>
-    <button id="add_tag" type="button">Add Tag</button>
-    <script>
-    $('#add_tag').button();
-    $('#add_tag').click(function() {
-        var new_tag = $('#new_tag');
-        var tag = new_tag.val();
-        if (!tag) {
-            alert('No tag entered');
-            return;
-        }
-        $.ajax({
-            type: 'POST',
-            url: '[% request.uri_base %]/graphs/[% graph.id %]/tags',
-            data: tag,
-            success: function(tag, textStatus) {
-                $('#tags').append(
-                    '<li id="tag_' + tag.name + '" class="tag_cont">'
-                    + '<a href="[% request.uri_base %]/graphs?tag='
-                        + tag.name + '" target="_blank">'
-                        + tag.name + '</a> '
-                    + '<a href="#" onclick="delete_tag('
-                        + "'" + tag.name + "'" + ')">X</a>'
-                    + '</li>'
-                );
-                new_tag.val('');
-            },
-            dataType: 'json'
-        });
-    });
-    </script>
-    </div>
-  </div>
-
-  <div class="accordion">
-    <h3><a href="#">Search Graph</a></h3>
-    <div>
-      <input id="search_inp" type="text" name="search" value="" />
-      <div>
-        <button id="search_btn" type="button">Search</button>
-        <button id="clear_btn" type="button">Clear</button>
-      </div>
-      <script>
-      $('#clear_btn').button();
-      $('#clear_btn').click(function() {
-          vis.visualStyleBypass(null);
-      });
-      $('#search_btn').button();
-      $('#search_btn').click(function() {
-          var search_term = $('#search_inp').val();
-          //vis.select([node]);
-
-          var bypass = { nodes: { }, edges: { } };
-          var props = { 
-              color: '#F00',
-              //labelFontSize: 16,
-              //labelFontColor: "#ff0000",
-              labelFontWeight: "bold"
-          };
-          bypass['nodes'][search_term] = props;
-          vis.visualStyleBypass(bypass);
-
-      });
-      </script>
-    </div>
-  </div>
-
-  <div class="accordion">
-    <h3><a href="#">Node Details</a></h3>
-    <div id="node_details"></div>
-  </div>
-
-</div> <!-- grid_4 -->

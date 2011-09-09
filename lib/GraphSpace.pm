@@ -139,34 +139,11 @@ get '/api/graphs/:graph_id.:format' => sub {
 post '/api/graphs' => sub {
     my $json = request->body;
     my $data = from_json $json;
-    my $name = $data->{metadata}{name};
-    if (not $name) {
-        status 400;
-        return "The graph metadata must contain a name\n";
-    }
-    $data->{graph}{dataSchema} = {
-        nodes => [
-            { name => 'label',    type => 'string' },
-            { name => 'popup',    type => 'string' },
-            { name => 'tooltip',  type => 'string' },
-            { name => 'color',    type => 'string' },
-            { name => 'size',     type => 'float'  },
-            { name => 'shape',    type => 'string' },
-            { name => 'graph_id', type => 'int'    },
-            { name => 'go_function_id', type => 'string' },
-            { name => 'labelFontWeight', type => 'string' },
-        ],
-        edges => [
-            { name => 'width', type => 'double' },
-            { name => 'label', type => 'string' },
-            { name => 'popup', type => 'string' },
-            { name => 'color', type => 'string' },
-            { name => 'labelFontWeight', type => 'string' },
-        ],
-    };
+    my $name = $data->{metadata}{name}
+        or return send_error("The graph metadata must contain a name\n", 400);
     my $graph = schema->resultset('Graph')->create({
         name    => $name,
-        json    => to_json($data),
+        json    => $json,
         user_id => var('api_user'),
     });
     my $id = $graph->id;
@@ -180,13 +157,18 @@ post '/api/graphs' => sub {
 
 put '/api/graphs/:graph_id' => sub {
     my $graph_id = params->{graph_id};
-    my $graph = get_graph($graph_id);
-    if (not $graph) {
-        status 404;
-        return "No graph exists with an id of $graph_id\n";
-    }
-    $graph->update({ json => request->body });
-    return "Graph $graph_id was updated\n";
+    my $graph = get_graph($graph_id)
+        or return send_error("No graph exists with an id of $graph_id\n", 404);
+    my $json = request->body;
+    my $data = from_json $json;
+    my $name = $data->{metadata}{name}
+        or return send_error("The graph metadata must contain a name\n", 400);
+    $graph->update({
+        name    => $name,
+        json    => $json,
+        user_id => var('api_user'),
+    });
+    return "Good job\n";
 };
 
 del '/api/graphs/:graph_id' => sub {
