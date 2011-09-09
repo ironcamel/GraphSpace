@@ -80,13 +80,13 @@ ajax '/graphs/:graph_id.:format' => sub {
 };
 
 get '/graphs/:graph_id' => sub {
-    my $graph_id = params->{graph_id};
+    my $graph_id = param 'graph_id';
+    my $size = param('size') || '';
+    my $template = $size eq 'large' ? 'large' : 'graph';
     my $graph = get_graph($graph_id);
-    if (not $graph) {
-        status 404;
-        return "The graph [$graph_id] does not exist\n";
-    };
-    template graph => {
+    return send_error "The graph [$graph_id] does not exist", 404
+        unless $graph;
+    template $template => {
         graph        => $graph,
         graph_format => $graph->json ? 'json' : 'graphml',
         graph_tags   => [ $graph->tags ],
