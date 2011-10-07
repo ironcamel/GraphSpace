@@ -37,10 +37,10 @@ Available attributes:
           { "name" : "labelFontWeight", "type" : "string" }
        ],
        "edges" : [
-          { "name" : "width", "type" : "double" },
-          { "name" : "label", "type" : "string" },
-          { "name" : "popup", "type" : "string" },
-          { "name" : "color", "type" : "string" },
+          { "name" : "width",           "type" : "double" },
+          { "name" : "label",           "type" : "string" },
+          { "name" : "popup",           "type" : "string" },
+          { "name" : "color",           "type" : "string" },
           { "name" : "graph_id",        "type" : "int"    },
           { "name" : "labelFontWeight", "type" : "string" }
        ]
