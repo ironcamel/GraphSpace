@@ -1,5 +1,5 @@
 
-Example network:
+Example graph:
 <pre>
 {
    "metadata" : {
@@ -27,12 +27,13 @@ Example network:
 Available attributes:
 <pre>
        "nodes" : [
-          { "name" : "label", "type" : "string" },
-          { "name" : "popup", "type" : "string" },
-          { "name" : "color", "type" : "string" },
-          { "name" : "size", "type" : "float" },
-          { "name" : "shape", "type" : "string" },
-          { "name" : "graph_id", "type" : "int" },
+          { "name" : "id",              "type" : "string" },
+          { "name" : "label",           "type" : "string" },
+          { "name" : "popup",           "type" : "string" },
+          { "name" : "color",           "type" : "string" },
+          { "name" : "size",            "type" : "float"  },
+          { "name" : "shape",           "type" : "string" },
+          { "name" : "graph_id",        "type" : "int"    },
           { "name" : "labelFontWeight", "type" : "string" }
        ],
        "edges" : [
@@ -40,6 +41,7 @@ Available attributes:
           { "name" : "label", "type" : "string" },
           { "name" : "popup", "type" : "string" },
           { "name" : "color", "type" : "string" },
+          { "name" : "graph_id",        "type" : "int"    },
           { "name" : "labelFontWeight", "type" : "string" }
        ]
 <pre>
