@@ -56,14 +56,14 @@ function get_ppi(go_id) {
 function add_data_schema(graph) {
     graph.dataSchema = {
        "nodes" : [
-          { "name" : "label", "type" : "string" },
-          { "name" : "popup", "type" : "string" },
-          { "name" : "tooltip", "type" : "string" },
-          { "name" : "color", "type" : "string" },
-          { "name" : "size", "type" : "float" },
-          { "name" : "shape", "type" : "string" },
-          { "name" : "graph_id", "type" : "int" },
-          { "name" : "go_function_id", "type" : "string" },
+          { "name" : "label",           "type" : "string" },
+          { "name" : "popup",           "type" : "string" },
+          { "name" : "tooltip",         "type" : "string" },
+          { "name" : "color",           "type" : "string" },
+          { "name" : "size",            "type" : "float"  },
+          { "name" : "shape",           "type" : "string" },
+          { "name" : "graph_id",        "type" : "int"    },
+          { "name" : "go_function_id",  "type" : "string" },
           { "name" : "labelFontWeight", "type" : "string" }
        ],
        "edges" : [
@@ -71,6 +71,7 @@ function add_data_schema(graph) {
           { "name" : "label", "type" : "string" },
           { "name" : "popup", "type" : "string" },
           { "name" : "color", "type" : "string" },
+          { "name" : "graph_id",        "type" : "int"    },
           { "name" : "labelFontWeight", "type" : "string" }
        ]
     };

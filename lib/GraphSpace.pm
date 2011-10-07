@@ -24,6 +24,8 @@ before_template sub {
 
 get '/' => sub { redirect uri_for '/graphs' };
 
+get '/help' => sub { template 'help' };
+
 get '/admin' => sub { template 'admin' };
 
 post '/admin' => sub {

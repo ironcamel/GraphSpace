@@ -1,0 +1,50 @@
+
+Example network:
+<pre>
+{
+   "metadata" : {
+      "name" : "foo graph"
+   },
+   "graph" : {
+      "data" : {
+         "edges" : [
+            {
+               "source" : "2",
+               "target" : "1",
+               "id" : "2-1",
+               "label" : "2 to 1"
+            }
+         ],
+         "nodes" : [
+            { "label" : "A", "id" : "1" },
+            { "label" : "B", "id" : "2" }
+         ]
+      }
+   }
+}
+</pre>
+
+Available attributes:
+<pre>
+       "nodes" : [
+          { "name" : "label", "type" : "string" },
+          { "name" : "popup", "type" : "string" },
+          { "name" : "color", "type" : "string" },
+          { "name" : "size", "type" : "float" },
+          { "name" : "shape", "type" : "string" },
+          { "name" : "graph_id", "type" : "int" },
+          { "name" : "labelFontWeight", "type" : "string" }
+       ],
+       "edges" : [
+          { "name" : "width", "type" : "double" },
+          { "name" : "label", "type" : "string" },
+          { "name" : "popup", "type" : "string" },
+          { "name" : "color", "type" : "string" },
+          { "name" : "labelFontWeight", "type" : "string" }
+       ]
+<pre>
+
+To create a graph:
+<pre>
+POST http://graph-space-server/api/graphs < graph.json
+</pre>

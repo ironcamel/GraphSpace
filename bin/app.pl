@@ -17,5 +17,5 @@ builder {
 
 sub authen_cb {
     my($username, $password) = @_;
-    return $username eq $password and $username ~~ [qw(arjun chrisp test)];
+    return $username eq $password and $username ~~ [qw(arjun chrisp test chrisl)];
 }
