@@ -1,30 +1,9 @@
 
-<form action="[% request.uri_base %]/login" method="post">
+[% IF failed %]
+<div class="alert-message error">
+<p><strong>Oops!</strong> invalid username/password.</p>
+</div>
 
-  <input type="hidden" name="requested_path" value="[% requested_path %]">
-  Test account login is test/test
-  [% IF failed %]
-  <div id="failed_msg">
-    username/login was invalid
-  </div>
-  [% END %]
-  <p>
-    <div>
-      <label for="username">username:</label>
-      <input id="username" type="text" name="username" value="">
-    </div>
-    <div>
-      <label for="password">password:</label>
-      <input id="password" type="password" name="password" value="">
-    </div>
-  </p>
-    
-  <button id="login_btn" type="submit">Login</button>
+Test account login is test/test
+[% END %]
 
-</form>
-
-<script>
-$(function() {
-    $('#login_btn').button();
-});
-</script>

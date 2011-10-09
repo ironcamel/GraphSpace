@@ -13,7 +13,7 @@ before sub {
 
     if (! session('user') && request->path_info !~ m{^/(login|help|api)}) {
         var requested_path => request->path_info;
-        request->path_info('/login');
+        #request->path_info('/login');
     }
 };
 
@@ -52,7 +52,7 @@ post '/login' => sub {
     my $user = schema->resultset('User')->find($username);
     if ($user and $user->password eq $password) {
         session user => $username;
-        redirect uri_for params->{requested_path};
+        redirect uri_for(params->{requested_path} || '/graphs');
     } else {
         redirect uri_for('/login') . '?failed=1';
     }
@@ -60,7 +60,7 @@ post '/login' => sub {
 
 get '/logout' => sub {
     session->destroy;
-    redirect uri_for '/login';
+    redirect uri_for '/graphs';
 };
 
 get '/boot' => sub {
@@ -72,11 +72,12 @@ get '/boot' => sub {
 
 get '/graphs' => sub {
     my $tag = params->{tag};
+    my $user_id = session 'user';
+    my $search = $user_id ? { user_id => $user_id } : {};
     my @graphs = $tag
         ? schema->resultset('GraphTag')->find({ name => $tag })->graphs
-            ->search({ user_id => session('user') }, { rows => 100 })
-        : schema->resultset('Graph')
-            ->search({ user_id => session('user') }, { rows => 100 });
+            ->search($search, { rows => 100 })
+        : schema->resultset('Graph')->search($search, { rows => 100 });
     template graphs => {
         graphs => \@graphs,
         graph_tags => [ schema->resultset('GraphTag')->all ],

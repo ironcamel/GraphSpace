@@ -2,7 +2,6 @@ appname: GraphSpace
 layout: bootstrap
 logger: file
 #logger: console
-#session: Simple
 session: YAML
 serializer: JSON
 charset: "UTF-8"

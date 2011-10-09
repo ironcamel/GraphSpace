@@ -24,7 +24,9 @@ $(function() {
   [% END %]
   </ul>
   -->
-  <h3>Search Results</h3>
+  <p>
+  <h2>Graphs</h2>
+  </p>
   <table id="graphs_tbl" style="width:50%">
     <thead>
       <!--
