@@ -238,7 +238,9 @@ $(function() {
   <div class="accordion">
     <h3><a href="#">Search Graph</a></h3>
     <div>
-      <input id="search_inp" type="text" name="search" value="" />
+      <p>
+        <input id="search_inp" type="text" name="search" value="" />
+      </p>
       <div>
         <button id="search_btn" type="button">Search</button>
         <button id="clear_btn" type="button">Clear</button>
@@ -266,58 +268,60 @@ $(function() {
       });
       </script>
     </div>
-  </div>
+  </div> <!-- accordion -->
 
   <div class="accordion">
     <h3><a href="#">Tags</a></h3>
     <div>
-    <input id="new_tag" type="text" value=""/>
-    <button id="add_tag" type="button">Add Tag</button>
-    <ul class="tags">
-    [% FOREACH tag IN graph_tags %]
-        <li id="tag_[% tag.name %]" class="label">
-        <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]" target="_blank">[% tag.name %]</a>
-        <a href="#" onclick="delete_tag('[% tag.name %]')">X</a>
-        </li>
-    [% END %]
-    </ul>
-    <script>
-    $('#add_tag').button();
-    $('#add_tag').click(function() {
-        var new_tag = $('#new_tag');
-        var tag = new_tag.val();
-        if (!tag) {
-            alert('No tag entered');
-            return;
-        }
-        $.ajax({
-            type: 'POST',
-            url: '[% request.uri_base %]/graphs/[% graph.id %]/tags',
-            data: tag,
-            success: function(tag, textStatus) {
-                $('ul.tags').append(
-                    '<li class="label" id="tag_' + tag.name
-                        + '" class="tag_cont">'
-                    + '<a href="[% request.uri_base %]/graphs?tag='
-                        + tag.name + '" target="_blank">'
-                        + tag.name + '</a> '
-                    + '<a href="#" onclick="delete_tag('
-                        + "'" + tag.name + "'" + ')">X</a>'
-                    + '</li>'
-                );
-                new_tag.val('');
-            },
-            dataType: 'json'
-        });
-    });
-    </script>
+      <p>
+        <input id="new_tag" type="text" value=""/>
+      </p>
+      <button id="add_tag" type="button">Add Tag</button>
+      <ul class="tags">
+      [% FOREACH tag IN graph_tags %]
+          <li id="tag_[% tag.name %]" class="label">
+          <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]" target="_blank">[% tag.name %]</a>
+          <a href="#" onclick="delete_tag('[% tag.name %]')">X</a>
+          </li>
+      [% END %]
+      </ul>
+      <script>
+      $('#add_tag').button();
+      $('#add_tag').click(function() {
+          var new_tag = $('#new_tag');
+          var tag = new_tag.val();
+          if (!tag) {
+              alert('No tag entered');
+              return;
+          }
+          $.ajax({
+              type: 'POST',
+              url: '[% request.uri_base %]/graphs/[% graph.id %]/tags',
+              data: tag,
+              success: function(tag, textStatus) {
+                  $('ul.tags').append(
+                      '<li class="label" id="tag_' + tag.name
+                          + '" class="tag_cont">'
+                      + '<a href="[% request.uri_base %]/graphs?tag='
+                          + tag.name + '" target="_blank">'
+                          + tag.name + '</a> '
+                      + '<a href="#" onclick="delete_tag('
+                          + "'" + tag.name + "'" + ')">X</a>'
+                      + '</li>'
+                  );
+                  new_tag.val('');
+              },
+              dataType: 'json'
+          });
+      });
+      </script>
     </div>
-  </div>
+  </div> <!-- accordion -->
 
   <div class="accordion">
     <h3><a href="#">Node Details</a></h3>
     <div id="node_details"></div>
-  </div>
+  </div> <!-- accordion -->
 
 </div> <!-- span5 -->
 </div> <!-- row -->

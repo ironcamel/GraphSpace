@@ -50,10 +50,10 @@ $(function() {
   <div class="accordion">
     <h3><a href="#">Search</a></h3>
     <div>
-      <p> <input id="search_inp" type="text" name="search" /> </p>
       <p>
-      <button id="search_btn" type="button">Search</button>
+        <input id="search_inp" type="text" name="search" />
       </p>
+      <button id="search_btn" type="button">Search</button>
     </div>
   </div>
 
