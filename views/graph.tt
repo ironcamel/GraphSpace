@@ -77,6 +77,21 @@ function add_data_schema(graph) {
     };
 }
 
+function delete_tag(tag) {
+    var url = '[% request.uri_base %]/graphs/[% graph.id %]/tags/' + tag;
+    $.ajax({
+        url: url,
+        dataType: 'text',
+        type: 'DELETE',
+        error: function(xhr, text, err) { 
+            alert('ajax error: ' + text);
+        },
+        success: function(data) {
+            $('#tag_' + tag).remove();
+        }
+    });
+}
+
 var div_id = "cytoscapeweb";
 
 function gen_node_details(data) {
@@ -196,13 +211,17 @@ $(function() {
 
 
 <div id="dialog" style="max-height:400px; overflow:auto;"></div>
+<!--
+-->
 
-<div class="grid_8">
+<div class="row">
+
+<div class="span11">
   <div id="cytoscapeweb"> Loading graph ...  </div>
   <a href="[% request.path_info %]?size=large">large view</a>
-</div> <!-- grid_8 -->
+</div> <!-- span11 -->
 
-<div class="grid_4">
+<div class="span5">
 
   <div id="graph_details_cont" class="accordion">
     <h3><a href="#">Graph Details</a></h3>
@@ -213,51 +232,6 @@ $(function() {
         <b>description:</b>
         <span id="graph_details"></span>
       </div>
-    </div>
-  </div>
-
-  <div class="accordion">
-    <h3><a href="#">Tags:</a></h3>
-    <div>
-    <ul id="tags" style="margin-bottom:4px">
-    [% FOREACH tag IN graph_tags %]
-        <li id="tag_[% tag.name %]" class="tag_cont">
-        <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]" target="_blank">[% tag.name %]</a>
-        <a href="#" onclick="delete_tag('[% tag.name %]')">X</a>
-        </li>
-    [% END %]
-    </ul>
-    <input id="new_tag" type="text" value=""/>
-    <button id="add_tag" type="button">Add Tag</button>
-    <script>
-    $('#add_tag').button();
-    $('#add_tag').click(function() {
-        var new_tag = $('#new_tag');
-        var tag = new_tag.val();
-        if (!tag) {
-            alert('No tag entered');
-            return;
-        }
-        $.ajax({
-            type: 'POST',
-            url: '[% request.uri_base %]/graphs/[% graph.id %]/tags',
-            data: tag,
-            success: function(tag, textStatus) {
-                $('#tags').append(
-                    '<li id="tag_' + tag.name + '" class="tag_cont">'
-                    + '<a href="[% request.uri_base %]/graphs?tag='
-                        + tag.name + '" target="_blank">'
-                        + tag.name + '</a> '
-                    + '<a href="#" onclick="delete_tag('
-                        + "'" + tag.name + "'" + ')">X</a>'
-                    + '</li>'
-                );
-                new_tag.val('');
-            },
-            dataType: 'json'
-        });
-    });
-    </script>
     </div>
   </div>
 
@@ -295,8 +269,55 @@ $(function() {
   </div>
 
   <div class="accordion">
+    <h3><a href="#">Tags</a></h3>
+    <div>
+    <input id="new_tag" type="text" value=""/>
+    <button id="add_tag" type="button">Add Tag</button>
+    <ul class="tags">
+    [% FOREACH tag IN graph_tags %]
+        <li id="tag_[% tag.name %]" class="label">
+        <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]" target="_blank">[% tag.name %]</a>
+        <a href="#" onclick="delete_tag('[% tag.name %]')">X</a>
+        </li>
+    [% END %]
+    </ul>
+    <script>
+    $('#add_tag').button();
+    $('#add_tag').click(function() {
+        var new_tag = $('#new_tag');
+        var tag = new_tag.val();
+        if (!tag) {
+            alert('No tag entered');
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '[% request.uri_base %]/graphs/[% graph.id %]/tags',
+            data: tag,
+            success: function(tag, textStatus) {
+                $('ul.tags').append(
+                    '<li class="label" id="tag_' + tag.name
+                        + '" class="tag_cont">'
+                    + '<a href="[% request.uri_base %]/graphs?tag='
+                        + tag.name + '" target="_blank">'
+                        + tag.name + '</a> '
+                    + '<a href="#" onclick="delete_tag('
+                        + "'" + tag.name + "'" + ')">X</a>'
+                    + '</li>'
+                );
+                new_tag.val('');
+            },
+            dataType: 'json'
+        });
+    });
+    </script>
+    </div>
+  </div>
+
+  <div class="accordion">
     <h3><a href="#">Node Details</a></h3>
     <div id="node_details"></div>
   </div>
 
-</div> <!-- grid_4 -->
+</div> <!-- span5 -->
+</div> <!-- row -->

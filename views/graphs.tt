@@ -41,7 +41,7 @@ $(function() {
     </tr>
     [% END %]
   </table>
-</div> <!-- grid_8 -->
+</div> <!-- span11 -->
 
 <div class="span5">
 
@@ -70,6 +70,6 @@ $(function() {
 <!--
 -->
 
-</div> <!-- grid_4 -->
+</div> <!-- span5 -->
 
 </div> <!-- row -->

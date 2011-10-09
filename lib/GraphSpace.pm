@@ -24,7 +24,7 @@ before_template sub {
 
 get '/' => sub { redirect uri_for '/graphs' };
 
-get '/help' => sub { template 'help' };
+get '/help' => sub { template help => { active_nav => 'help' } };
 
 get '/admin' => sub { template 'admin' };
 
@@ -67,7 +67,7 @@ get '/boot' => sub {
     template graphs => {
         graphs => [map {name => $_, id => 42}, qw(foo bar poo)],
         graph_tags => [map {name => $_}, (qw(foo bar poo)) x 4],
-    }, { layout => 'bootstrap' };
+    };
 };
 
 get '/graphs' => sub {
@@ -80,7 +80,7 @@ get '/graphs' => sub {
     template graphs => {
         graphs => \@graphs,
         graph_tags => [ schema->resultset('GraphTag')->all ],
-    }, { layout => 'bootstrap' };
+    };
 };
 
 ajax '/graphs/:graph_id.:format' => sub {

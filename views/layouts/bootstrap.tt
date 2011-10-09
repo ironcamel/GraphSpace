@@ -98,9 +98,11 @@
         <div class="container">
           <a class="brand" href="#">GraphSpace</a>
           <ul class="nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li [% active_nav ? '' : 'class="active"' %]><a href="[% request.uri_base %]">Home</a></li>
+            <li [% active_nav == 'help' ? 'class="active"' : '' %]><a href="[% request.uri_base %]/help">Help</a></li>
+            <!--
             <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            -->
           </ul>
           [% IF user_id %]
           <ul class="nav secondary-nav pull-right">

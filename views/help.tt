@@ -1,4 +1,6 @@
 
+<div class="row">
+<div class="span16">
 Example graph:
 <pre>
 {
@@ -44,9 +46,12 @@ Available attributes:
           { "name" : "graph_id",        "type" : "int"    },
           { "name" : "labelFontWeight", "type" : "string" }
        ]
-<pre>
+</pre>
 
 To create a graph:
 <pre>
 POST http://graph-space-server/api/graphs < graph.json
 </pre>
+
+</div> <!-- span16 -->
+</div> <!-- row -->
