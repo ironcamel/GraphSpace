@@ -63,6 +63,13 @@ get '/logout' => sub {
     redirect uri_for '/login';
 };
 
+get '/boot' => sub {
+    template graphs => {
+        graphs => [map {name => $_, id => 42}, qw(foo bar poo)],
+        graph_tags => [map {name => $_}, (qw(foo bar poo)) x 4],
+    }, { layout => 'bootstrap' };
+};
+
 get '/graphs' => sub {
     my $tag = params->{tag};
     my @graphs = $tag
@@ -73,7 +80,7 @@ get '/graphs' => sub {
     template graphs => {
         graphs => \@graphs,
         graph_tags => [ schema->resultset('GraphTag')->all ],
-    };
+    }, { layout => 'bootstrap' };
 };
 
 ajax '/graphs/:graph_id.:format' => sub {

@@ -1,0 +1,21 @@
+
+ul.tags {
+    margin: 0;
+}
+
+ul.tags li {
+    list-style-type: none;
+    float: left;
+    padding: 3px 6px;
+    margin: 4px 3px;
+/*
+    border-radius: 6px;
+    border:2px solid #999;
+    background-color: #ddd;
+    font-size: .8em;
+*/
+}
+
+div.accordion {
+    margin-bottom: 10px;
+}
