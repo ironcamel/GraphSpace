@@ -29,21 +29,45 @@ $(function() {
   </p>
   <table id="graphs_tbl" style="width:50%">
     <thead>
-      <!--
-      <tr> <th style="text-align:center" colspan=3>Graphs</th> </tr>
-      -->
-      <tr> <th>id</th> <th>name</th>  </tr>
+      <tr>
+        <th>Id</th>
+        <th>Name</th> 
+        [% IF user_id %]
+        <th></th> 
+        [% END %]
+      </tr>
     </thead>
+    <tbody>
     [% FOREACH g IN graphs %]
     <tr>
       <td> [% g.id %] </td>
       <td>
         <a href="[% request.uri_base %]/graphs/[% g.id %]">[% g.name %]</a>
       </td>
+      [% IF user_id %]
+      <td style="padding:2px; width:10%">
+        <button id="btn_[% g.id %]" class="btn small" data-graph_id="[% g.id %]">Delete</button>
+      </td> 
+      [% END %]
     </tr>
     [% END %]
+    </tbody>
   </table>
 </div> <!-- span11 -->
+
+<script>
+$('#graphs_tbl button').click(function() {
+    var del_btn = $(this);
+    var graph_id = del_btn.attr('data-graph_id');
+    $.ajax({
+        type: 'DELETE',
+        url: '[% request.uri_base %]/graphs/' + graph_id,
+        success: function(data, textStatus) {
+            del_btn.closest('tr').hide();
+        }
+    });
+});
+</script>
 
 <div class="span5">
 

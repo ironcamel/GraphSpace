@@ -65,7 +65,7 @@ get '/logout' => sub {
 
 get '/boot' => sub {
     template graphs => {
-        graphs => [map {name => $_, id => 42}, qw(foo bar poo)],
+        graphs => [map {name => $_, id => int(rand() * 999)}, qw(foo bar poo)],
         graph_tags => [map {name => $_}, (qw(foo bar poo)) x 4],
     };
 };
@@ -78,9 +78,11 @@ get '/graphs' => sub {
         ? schema->resultset('GraphTag')->find({ name => $tag })->graphs
             ->search($search, { rows => 100 })
         : schema->resultset('Graph')->search($search, { rows => 100 });
+    my @tags = schema->resultset('GraphTag')->search({}, { rows => 200 });
     template graphs => {
-        graphs => \@graphs,
-        graph_tags => [ schema->resultset('GraphTag')->all ],
+        user_id    => $user_id,
+        graphs     => \@graphs,
+        graph_tags => \@tags,
     };
 };
 
@@ -181,23 +183,9 @@ put '/api/graphs/:graph_id' => sub {
     return "Good job\n";
 };
 
-del '/api/graphs/:graph_id' => sub {
-    my $graph_id = params->{graph_id};
-    my $graph = get_graph($graph_id);
-    if (not $graph) {
-        status 404;
-        return "No graph exists with an id of $graph_id\n";
-    }
-    if ($graph->user_id ne var('api_user')) {
-        status 403;
-        return to_json { error => "You can only delete your own graphs" };
-    }
+del '/graphs/:graph_id' => \&delete_graph;
 
-    $graph->delete;
-    # TODO: Should we delete orphaned tags? DBIC takes care of deleting rows
-    # from relationship table.
-    return { id => $graph_id };
-};
+del '/api/graphs/:graph_id' => \&delete_graph;
 
 ajax '/ppi/:go_id' => sub {
     my $go_id = params->{go_id};
@@ -226,6 +214,25 @@ get '/tags' => sub {
 };
 
 sub get_graph { schema->resultset('Graph')->find($_[0]) }
+
+sub delete_graph {
+    my $graph_id = params->{graph_id};
+    my $graph = get_graph($graph_id);
+    if (not $graph) {
+        status 404;
+        return { error => "No graph exists with an id of $graph_id" };
+    }
+    my $user_id = session('user') // var('api_user') // '';
+    if ($graph->user_id ne $user_id) {
+        status 403;
+        return { error => "You can only delete your own graphs" };
+    }
+
+    $graph->delete;
+    # TODO: Should we delete orphaned tags? DBIC takes care of deleting rows
+    # from relationship table.
+    return { id => $graph_id };
+};
 
 sub get_ppi {
     my ($go_id) = @_;
