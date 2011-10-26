@@ -158,29 +158,38 @@ post '/api/graphs' => sub {
         json    => $json,
         user_id => var('api_user'),
     });
-    my $id = $graph->id;
+    my $graph_id = $graph->id;
     status 201;
-    header location => uri_for("/api/graphs/$id");
+    header location => uri_for("/api/graphs/$graph_id");
     return {
-        id  => $graph->id,
-        url => uri_for('/graphs/') . $id,
+        id  => $graph_id,
+        url => uri_for("/graphs/$graph_id")->as_string,
     };
 };
 
 put '/api/graphs/:graph_id' => sub {
     my $graph_id = params->{graph_id};
-    my $graph = get_graph($graph_id)
-        or return send_error("No graph exists with an id of $graph_id\n", 404);
+    my $graph = get_graph($graph_id);
+    if (not $graph) {
+        status 404;
+        return { error => "No graph exists with an id of $graph_id" };
+    }
     my $json = request->body;
     my $data = from_json $json;
-    my $name = $data->{metadata}{name}
-        or return send_error("The graph metadata must contain a name\n", 400);
+    my $name = $data->{metadata}{name};
+    if (not defined $name) {
+        status 400;
+        return { error => "The graph metadata must contain a name" };
+    }
     $graph->update({
         name    => $name,
         json    => $json,
         user_id => var('api_user'),
     });
-    return "Good job\n";
+    return {
+        id  => $graph_id,
+        url => uri_for("/graphs/$graph_id")->as_string,
+    };
 };
 
 del '/graphs/:graph_id' => \&delete_graph;
