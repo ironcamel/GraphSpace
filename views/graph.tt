@@ -285,15 +285,15 @@ $(function() {
               type: 'POST',
               url: '[% request.uri_base %]/graphs/[% graph.id %]/tags',
               data: tag,
-              success: function(tag, textStatus) {
+              success: function(data, textStatus) {
                   $('ul.tags').append(
-                      '<li class="label" id="tag_' + tag.name
+                      '<li class="label" id="tag_' + tag
                           + '" class="tag_cont">'
                       + '<a href="[% request.uri_base %]/graphs?tag='
-                          + tag.name + '" target="_blank">'
-                          + tag.name + '</a> '
+                          + tag + '" target="_blank">'
+                          + tag + '</a> '
                       + '<a href="#" onclick="delete_tag('
-                          + "'" + tag.name + "'" + ')">X</a>'
+                          + "'" + tag + "'" + ')">X</a>'
                       + '</li>'
                   );
                   new_tag.val('');

@@ -104,16 +104,28 @@ get '/graphs/:graph_id' => sub {
     };
 };
 
+get '/tags' => sub {
+    my @tags = map { $_->name } schema->resultset('GraphTag')->all;
+    return to_json \@tags;
+};
+
 post '/graphs/:graph_id/tags' => sub {
     my $tag_name = request->body;
     my $graph_id = params->{graph_id};
-    debug "adding tag $tag_name to graph_id $graph_id";
-    my $graph = get_graph($graph_id);
-    my $tag =
-        schema->resultset('GraphTag')->find_or_create({ name => $tag_name });
-    $graph->add_to_tags($tag);
-    return to_json { id => $tag->id, name => $tag_name };
+    add_tags($graph_id, [ $tag_name ]);
+    return { name => $tag_name };
 };
+
+sub add_tags {
+    my ($graph_id, $tags) = @_;
+    my $graph = get_graph($graph_id);
+    for my $tag_name (@$tags) {
+        #debug "adding tag $tag_name to graph_id $graph_id";
+        my $tag = schema->resultset('GraphTag')
+            ->find_or_create({ name => $tag_name });
+        $graph->add_to_tags($tag);
+    }
+}
 
 del '/graphs/:graph_id/tags/:tag' => sub {
     my $tag_name = params->{tag};
@@ -152,6 +164,8 @@ post '/api/graphs' => sub {
         user_id => var('api_user'),
     });
     my $graph_id = $graph->id;
+    my $tags = $data->{metadata}{tags};
+    add_tags($graph_id, $tags) if $tags;
     status 201;
     header location => uri_for("/api/graphs/$graph_id");
     return {
@@ -207,11 +221,6 @@ get '/ppi/:go_id' => sub {
         graph_id => $go_id,
         is_ppi => 1,
     };
-};
-
-get '/tags' => sub {
-    my @tags = map { $_->name } schema->resultset('GraphTag')->all;
-    return to_json \@tags;
 };
 
 sub get_graph { schema->resultset('Graph')->find($_[0]) }

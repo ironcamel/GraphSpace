@@ -1,11 +1,147 @@
 
 <div class="row">
 <div class="span16">
-Example graph:
+<h1> API </h1>
+
+<p>
+GraphSpace provides a RESTful API for managing your graphs.
+Graphs are represented in <a href="http://json.org">JSON</a> format.
+</p>
+
+<p>
+Here is a minimal example graph:
+</p>
+
 <pre>
 {
    "metadata" : {
-      "name" : "foo graph"
+      "name" : "foo graph",
+   },
+   "graph" : {
+      "data" : {
+         "edges" : [
+            { "source" : "2", "target" : "1", "id" : "2-1" }
+         ],
+         "nodes" : [
+            { "label" : "A", "id" : "1" },
+            { "label" : "B", "id" : "2" }
+         ]
+      }
+   }
+}
+</pre>
+
+<p>
+To add the above graph to GraphSpace, you will need a http client.
+On debian based systems you can install LWP for example:
+</p>
+
+<pre>
+sudo apt-get install libwww-perl
+</pre>
+
+<p>
+Save the above graph to a file name foo.json and run the following command:
+</p>
+
+<pre>
+POST -C username:password http://graph-space-server/api/graphs < foo.json
+</pre>
+
+
+<p>
+Nodes can have the following attributes:
+</p>
+
+<table style="width:50%; ">
+  <thead>
+    <tr> <th> Name </th> <th> Type </th> </tr>
+  </thead>
+  <tbody>
+    <tr> <td> id </td> <td> string </td> </tr>
+    <tr> <td> label    </td> <td> string </td> </tr>
+    <tr> <td> popup    </td> <td> string </td> </tr>
+    <tr> <td> color    </td> <td> string </td> </tr>
+    <tr> <td> size     </td> <td> float  </td> </tr>
+    <tr> <td> shape    </td> <td> string </td> </tr>
+    <tr> <td> graph_id </td> <td> int    </td> </tr>
+    <tr> <td> labelFontWeight </td> <td> string </td> </tr>
+  </tbody>
+</table>
+
+<p>
+Edges can have the following attributes:
+</p>
+
+<table style="width:50%;">
+  <thead>
+    <tr> <th> Name </th> <th> Type </th> </tr>
+  </thead>
+  <tbody>
+    <tr> <td> id </td> <td> string </td> </tr>
+    <tr> <td> label    </td> <td> string </td> </tr>
+    <tr> <td> popup    </td> <td> string </td> </tr>
+    <tr> <td> color    </td> <td> string </td> </tr>
+    <tr> <td> width    </td> <td> float  </td> </tr>
+    <tr> <td> graph_id </td> <td> int    </td> </tr>
+    <tr> <td> labelFontWeight </td> <td> string </td> </tr>
+  </tbody>
+</table>
+
+<h2> Get Graph </h2>
+
+<table style="width:50%;">
+  <thead>
+    <tr> <th> Method </th> <th> Path </th> </tr>
+  </thead>
+  <tbody>
+    <tr> <td> GET </td> <td> /api/graphs/[graph-id] </td> </tr>
+  </tbody>
+</table>
+
+<p>
+Example response:
+</p>
+
+<pre>
+{
+   "metadata" : {
+      "name" : "foo graph",
+   },
+   "graph" : {
+      "data" : {
+         "edges" : [
+            { "source" : "2", "target" : "1", "id" : "2-1" }
+         ],
+         "nodes" : [
+            { "label" : "A", "id" : "1" },
+            { "label" : "B", "id" : "2" }
+         ]
+      }
+   }
+}
+</pre>
+
+<h2> Create Graph </h2>
+
+<table style="width:50%;">
+  <thead>
+    <tr> <th> Method </th> <th> Path </th> </tr>
+  </thead>
+  <tbody>
+    <tr> <td> POST </td> <td> /api/graphs </td> </tr>
+  </tbody>
+</table>
+
+<p>
+Example request:
+</p>
+
+<pre>
+{
+   "metadata" : {
+      "name" : "foo graph",
+      "tags" : ["foo", "bar"]
    },
    "graph" : {
       "data" : {
@@ -26,32 +162,25 @@ Example graph:
 }
 </pre>
 
-Available attributes:
+<p>
+Example response:
+</p>
+
 <pre>
-       "nodes" : [
-          { "name" : "id",              "type" : "string" },
-          { "name" : "label",           "type" : "string" },
-          { "name" : "popup",           "type" : "string" },
-          { "name" : "color",           "type" : "string" },
-          { "name" : "size",            "type" : "float"  },
-          { "name" : "shape",           "type" : "string" },
-          { "name" : "graph_id",        "type" : "int"    },
-          { "name" : "labelFontWeight", "type" : "string" }
-       ],
-       "edges" : [
-          { "name" : "width",           "type" : "double" },
-          { "name" : "label",           "type" : "string" },
-          { "name" : "popup",           "type" : "string" },
-          { "name" : "color",           "type" : "string" },
-          { "name" : "graph_id",        "type" : "int"    },
-          { "name" : "labelFontWeight", "type" : "string" }
-       ]
+{  
+   "id" : "6038",
+   "url" : "http://foo.com/graphs/6038"
+}
 </pre>
 
-To create a graph:
+<p>
+Example response headers:
+</p>
+
 <pre>
-POST http://graph-space-server/api/graphs < graph.json
+ Location: "http://foo.com/api/graphs/6038"
 </pre>
+
 
 </div> <!-- span16 -->
 </div> <!-- row -->
