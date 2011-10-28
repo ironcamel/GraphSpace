@@ -116,17 +116,6 @@ post '/graphs/:graph_id/tags' => sub {
     return { name => $tag_name };
 };
 
-sub add_tags {
-    my ($graph_id, $tags) = @_;
-    my $graph = get_graph($graph_id);
-    for my $tag_name (@$tags) {
-        #debug "adding tag $tag_name to graph_id $graph_id";
-        my $tag = schema->resultset('GraphTag')
-            ->find_or_create({ name => $tag_name });
-        $graph->add_to_tags($tag);
-    }
-}
-
 del '/graphs/:graph_id/tags/:tag' => sub {
     my $tag_name = params->{tag};
     my $graph_id = params->{graph_id};
@@ -243,6 +232,18 @@ sub delete_graph {
     # from relationship table.
     return { id => $graph_id };
 };
+
+sub add_tags {
+    my ($graph_id, $tags) = @_;
+    my $graph = get_graph($graph_id);
+    for my $tag_name (@$tags) {
+        #debug "adding tag $tag_name to graph_id $graph_id";
+        $tag_name =~ s/\s/-/g; # We are not allowing whitespace in tags.
+        my $tag = schema->resultset('GraphTag')
+            ->find_or_create({ name => $tag_name });
+        $graph->add_to_tags($tag);
+    }
+}
 
 sub get_ppi {
     my ($go_id) = @_;
