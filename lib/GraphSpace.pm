@@ -86,9 +86,9 @@ get '/graphs' => sub {
     };
 };
 
-ajax '/graphs/:graph_id.:format' => sub {
+ajax '/graphs/:graph_id' => sub {
     my $graph = get_graph(params->{graph_id});
-    return params->{format} eq 'json' ? $graph->json : $graph->graphml;
+    return $graph ? $graph->json : { error => 'graph not found' };
 };
 
 get '/graphs/:graph_id' => sub {
@@ -100,7 +100,6 @@ get '/graphs/:graph_id' => sub {
         unless $graph;
     template $template => {
         graph        => $graph,
-        graph_format => $graph->json ? 'json' : 'graphml',
         graph_tags   => [ $graph->tags ],
     };
 };
@@ -131,21 +130,15 @@ del '/graphs/:graph_id/tags/:tag' => sub {
 
 get '/foo' => sub { template 'foo' => {}, {layout => 0}};
 
-get '/api/graphs/:graph_id.:format' => sub {
+get '/api/graphs/:graph_id' => sub {
     my $graph_id = params->{graph_id};
-    my $format = params->{format};
     my $graph = get_graph($graph_id);
     if (not $graph) {
         status 404;
         return "No such graph exists with id $graph_id\n";
     }
-    if ($format eq 'json') {
-        content_type 'application/json';
-        return $graph->json;
-    } else {
-        content_type 'text/xml';
-        return $graph->graphml;
-    }
+    content_type 'application/json';
+    return $graph->json;
 };
 
 post '/api/graphs' => sub {
@@ -212,7 +205,6 @@ get '/ppi/:go_id' => sub {
     };
     template graph => {
         graph_id => $go_id,
-        graph_format => 'json',
         is_ppi => 1,
     };
 };

@@ -35,14 +35,6 @@ function show_popup(evt) {
     $('#dialog').dialog('open');
 }
 
-function get_graph(graph_id) {
-    var xml = $.ajax({
-        url: "[% request.uri_base %]/graphml/" + graph_id,
-        async: false
-    }).responseText;
-    return xml;
-}
-
 function get_ppi(go_id) {
     return $.ajax({
         url: "[% request.uri_base %]/ppi/" + go_id,
@@ -156,17 +148,15 @@ $(function() {
         [% IF is_ppi %]
         url: "[% request.uri_base %]/ppi/[% graph_id %]",
         [% ELSE %]
-        url: "[% request.uri_base %]/graphs/[% graph.id %].[% graph_format %]",
+        url: "[% request.uri_base %]/graphs/[% graph.id %]",
         [% END %]
         dataType: 'text',
         error: function(xhr, text, err) { 
             alert('ajax error: ' + text);
         },
         success: function(data) {
-            var graph = data;
-            [% IF graph_format == 'json' or is_ppi %]
             data = JSON.parse(data);
-            graph = data['graph'];
+            var graph = data['graph'];
             add_data_schema(graph);
             metadata = data['metadata'];
             if (metadata) {
@@ -182,9 +172,6 @@ $(function() {
             $('#search_inp').autocomplete({
                 source: nodes_for_search
             });
-            //console.log(nodes_for_search);
-            [% END %]
-            //console.log(data);
             vis.draw({
                 network: graph,
                 visualStyle: {

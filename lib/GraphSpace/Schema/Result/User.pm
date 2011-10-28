@@ -15,7 +15,7 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key('id');
 
 __PACKAGE__->has_many(
-    graphs => 'Foo::Schema::Result::Graph',
+    graphs => 'GraphSpace::Schema::Result::Graph',
     { 'foreign.user_id' => 'self.id' },
     { cascade_copy => 0, cascade_delete => 0 },
 );
