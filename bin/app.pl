@@ -3,6 +3,7 @@ use 5.10.1;
 use Dancer;
 use Plack::Builder;
 use GraphSpace;
+use Dancer::Plugin::DBIC qw(schema);
 #use Dancer::Plugin::NYTProf;
 
 builder {
@@ -17,6 +18,6 @@ builder {
 };
 
 sub authen_cb {
-    my($username, $password) = @_;
-    return $username eq $password and $username ~~ [qw(arjun chrisp test chrisl)];
+    my ($user, $pass) = @_;
+    return schema->resultset('User')->count({ id => $user, password => $pass });
 }
