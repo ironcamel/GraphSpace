@@ -78,7 +78,7 @@ get '/graphs' => sub {
         ? schema->resultset('GraphTag')->find({ name => $tag })->graphs
             ->search($search, { rows => 100 })
         : schema->resultset('Graph')->search($search, { rows => 100 });
-    my @tags = schema->resultset('GraphTag')->search({}, { rows => 200 });
+    my @tags = schema->resultset('GraphTag')->search({}, { rows => 100 });
     template graphs => {
         user_id    => $user_id,
         graphs     => \@graphs,
@@ -119,13 +119,7 @@ post '/graphs/:graph_id/tags' => sub {
 del '/graphs/:graph_id/tags/:tag' => sub {
     my $tag_name = params->{tag};
     my $graph_id = params->{graph_id};
-    debug "deleting tag $tag_name from graph_id $graph_id";
-    my $graph = get_graph($graph_id);
-    my $tag = schema->resultset('GraphTag')->find({ name => $tag_name });
-    if ($tag) {
-        $graph->remove_from_tags($tag);
-        $tag->delete if $tag->graphs->count == 0;
-    }
+    delete_tags($graph_id, [$tag_name]);
     return 1;
 };
 
@@ -182,6 +176,9 @@ put '/api/graphs/:graph_id' => sub {
         json    => $json,
         user_id => var('api_user'),
     });
+    delete_all_tags($graph_id);
+    my $tags = $data->{metadata}{tags};
+    add_tags($graph_id, $tags) if $tags;
     return {
         id  => $graph_id,
         url => uri_for("/graphs/$graph_id")->as_string,
@@ -233,15 +230,44 @@ sub delete_graph {
     return { id => $graph_id };
 };
 
+sub validate_tags {
+    my ($tags) = @_;
+}
+
 sub add_tags {
     my ($graph_id, $tags) = @_;
     my $graph = get_graph($graph_id);
     for my $tag_name (@$tags) {
         #debug "adding tag $tag_name to graph_id $graph_id";
         $tag_name =~ s/\s/-/g; # We are not allowing whitespace in tags.
+        $tag_name = lc $tag_name;
         my $tag = schema->resultset('GraphTag')
             ->find_or_create({ name => $tag_name });
         $graph->add_to_tags($tag);
+    }
+}
+
+sub delete_tags {
+    my ($graph_id, $tags) = @_;
+    my $graph = get_graph($graph_id);
+    for my $tag_name (@$tags) {
+        #debug "deleting tag $tag_name from graph_id $graph_id";
+        my $tag = schema->resultset('GraphTag')->find({ name => $tag_name });
+        if ($tag) {
+            $graph->remove_from_tags($tag);
+            $tag->delete if $tag->graphs->count == 0;
+        }
+    }
+}
+
+sub delete_all_tags {
+    my ($graph_id) = @_;
+    debug "deleting all tags for graph_id $graph_id";
+    my $graph = get_graph($graph_id);
+    for my $tag ($graph->tags) {
+        debug "deleting tag " . $tag->name . " from graph_id $graph_id";
+        $graph->remove_from_tags($tag);
+        $tag->delete if $tag->graphs->count == 0;
     }
 }
 

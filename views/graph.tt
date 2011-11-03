@@ -160,7 +160,8 @@ $(function() {
             add_data_schema(graph);
             metadata = data['metadata'];
             if (metadata) {
-                var details = metadata['graph_details'] || metadata['details'];
+                var details = metadata['graph_details'] || metadata['details']
+                    || metadata['description'];
                 if (details) {
                     $('#graph_details').html(details);
                     $('#graph_desc_cont').show();

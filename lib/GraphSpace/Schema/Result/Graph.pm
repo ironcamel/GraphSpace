@@ -15,6 +15,17 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key('id');
 
+__PACKAGE__->belongs_to(
+    user => "GraphSpace::Schema::Result::User",
+    { id => "user_id" },
+    {
+        is_deferrable => 1,
+        join_type     => "LEFT",
+        on_delete     => "CASCADE",
+        on_update     => "CASCADE",
+    },
+);
+
 __PACKAGE__->has_many(
     graph_to_tag => 'GraphSpace::Schema::Result::GraphToTag',
     { 'foreign.graph_id' => 'self.id' },

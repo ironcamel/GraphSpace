@@ -3,6 +3,7 @@ use 5.10.1;
 use Dancer;
 use Plack::Builder;
 use GraphSpace;
+#use Dancer::Plugin::NYTProf;
 
 builder {
     enable_if { shift->{PATH_INFO} =~ qr(^/api) } 'Auth::Basic',
