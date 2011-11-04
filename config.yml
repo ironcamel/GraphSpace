@@ -13,12 +13,13 @@ engines:
         stop_tag: '%]'
 
 plugins:
-    NYTProf:
-        profdir: ./profiles
     DBIC:
         graphdb:
             schema_class: 'GraphSpace::Schema'
             dsn: dbi:SQLite:dbname=/home/naveed/projects/GraphSpace/data/graph-space.db
-            #dsn: dbi:SQLite:dbname=/var/local/Graph-Space/graph-space.db
+            user: graphspace_db_user
+            pass: graphspace_db_password
+    #NYTProf:
+        #profdir: ./profiles
 
 ppi_path: /var/local/Graph-Space/ppi/yeast_biogrid

@@ -7,6 +7,10 @@ use Dancer::Plugin::Ajax;
 use Dancer::Plugin::DBIC;
 use File::Slurp qw(read_file);
 
+# Automagically create db tables the first time this app is run
+eval { schema->resultset('User')->count };
+schema->deploy if $@;
+
 before sub {
     var api_user => request->env->{REMOTE_USER};
     #debug '*** referer: '. request->header('referer');
