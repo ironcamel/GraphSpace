@@ -11,7 +11,7 @@ use File::Slurp qw(read_file);
 eval { schema->resultset('User')->count };
 schema->deploy if $@;
 
-before sub {
+hook before => sub {
     var api_user => request->env->{REMOTE_USER};
     #debug '*** referer: '. request->header('referer');
 
@@ -21,7 +21,7 @@ before sub {
     }
 };
 
-before_template sub {
+hook before_template_render => sub {
     my $tokens = shift;
     $tokens->{user_id} = session 'user';
 };

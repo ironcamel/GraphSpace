@@ -1,0 +1,23 @@
+
+=head1 INSTALLATION
+
+Installation is very easy using App:cpanminus.
+Just cd to the project folder and run:
+
+    sudo cpanm .
+    
+If you don't have App::cpanminus, you can install it by running:
+
+    sudo cpan App::cpanminus
+
+=head1 DEPLOYMENT
+
+Make sure to update the dsn, user, and password values in the config.yml file
+to point to your database. You will need "create table" privileges for the
+first time you deploy, because GraphSpace will automagically create the
+tables it needs.
+Then just run:
+
+    plackup -s Starman ./bin/app.pl
+
+=cut
