@@ -1,6 +1,7 @@
 use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME         => 'GraphSpace',
+    VERSION_FROM => 'lib/GraphSpace.pm',
     PREREQ_PM => {
        'Dancer'               => '0',
        'Dancer::Plugin::DBIC' => '0',
