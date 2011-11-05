@@ -27,11 +27,12 @@ CREATE TABLE graph_to_tag (
     FOREIGN KEY(tag_id) REFERENCES graph(id)
 );
 
+insert into user (id, password, name) values ('test', 'test', 'Test Account');
 /*
-insert into user values ('test', 'test', 'Test Account');
-insert into user values ('chrisp', 'chrisp', 'Chris Poirel');
-insert into user values ('chrisl', 'chrisl', 'Chris Lasher');
-insert into user values ('arjun', 'arjun', 'Arjun');
+insert into user (id, password, name) values ('chrisp', 'chrisp', 'Chris Poirel');
+insert into user (id, password, name) values ('chrisl', 'chrisl', 'Chris Lasher');
+insert into user (id, password, name) values ('arjun', 'arjun', 'Arjun');
+insert into user (id, password, name) values ('naveed', 'naveed', 'Naveed');
 
 INSERT INTO graph(id, json) VALUES('5', '{
     "graph": {
@@ -44,7 +45,6 @@ INSERT INTO graph(id, json) VALUES('5', '{
              { "id": "2to1", "source": "2", "target": "1" }
           ]
        }
-    "metadata": { "name" : "sample 1" }
     "metadata": { "name": "sample 1" }
 }');
 
