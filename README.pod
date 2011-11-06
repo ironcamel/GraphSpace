@@ -1,25 +1,50 @@
 
+=head1 ABOUT
+
+GraphSpace is a web based graph/network visualization tool and data store.
+See L<http://graphspace.org> for more information.
+
 =head1 INSTALLATION
 
-Installation is very easy using App:cpanminus.
+Installation is very easy using cpanminus.
 Just cd to the project folder and run:
 
     sudo cpanm --installdeps .
     
-If you don't have App::cpanminus, you can install it by running:
+Note that the above command may take a long time to complete, so be patient.
+If you don't have cpanminus, you can install it by running:
 
     sudo cpan App::cpanminus
 
+or:
+
+    curl -L cpanmin.us | perl - --sudo App::cpanminus
+
 =head1 DEPLOYMENT
 
-Make sure to update the dsn, user, and password values in the config.yml file
-to point to your database. You will need "create table" privileges for the
-first time you deploy, because GraphSpace will automagically create the
-tables it needs.
+Make sure to update the dsn, user and password values for your database in the
+config.yml file.
+You will need "create table" privileges the first time you deploy, because
+GraphSpace will automagically create the tables it needs if they don't exist.
 Then just run:
 
     plackup -s Starman -p 5000 ./bin/app.pl
 
 Now you can visit http://localhost:5000 and your app should be running.
+
+There are many other ways to deploy GraphSpace.
+The above way is the simplest and will meet the needs of most users.
+GraphSpace is simply a L<Plack>/L<PSGI> application written using the L<Dancer>
+web framework.
+You can visit L<Dancer::Deployment> for more information on deploying Dancer
+based applications.
+
+=head1 API
+
+GraphSpace provides a web based ReSTful API for managing your graphs.
+For documentation, see the Help tab in the application, or just visit
+L<http://graphspace.org/help>.
+We recommend that you use the Perl API bindings L<Net::GraphSpace> for
+interacting with the API.
 
 =cut
