@@ -52,8 +52,8 @@ get '/login' => sub {
 };
 
 post '/login' => sub {
-    my $username = params->{username};
-    my $password = params->{password};
+    my $username = param 'username';
+    my $password = param 'password';
     my $user = schema->resultset('User')->find($username);
     if ($user and $user->password eq $password) {
         session user_id => $username;
@@ -61,6 +61,31 @@ post '/login' => sub {
     } else {
         redirect uri_for('/login') . '?failed=1';
     }
+};
+
+ajax '/users' => sub {
+    my $username = param 'username'
+        or return { err_msg => 'The username is missing.' };
+    my $password = param 'password'
+        or return { err_msg => 'The password is missing.' };
+    my $email = param 'email';
+    if ($email and $email !~ /.+@..+\...+/) {
+        return { err_msg => "The email [$email] is invalid." }
+    }
+    my $user = {
+        id       => $username,
+        password => $password,
+        $email ? (email => $email) : (),
+    };
+    debug "Creating new user: ", $user;
+    eval { schema->resultset('User')->create($user) };
+    if ($@) {
+        error $@;
+        return { err_msg =>  "The username '$username' is already taken." }
+            if $@ =~ /column id is not unique/;
+        return { err_msg => "Could not create user '$username'." };
+    }
+    return { is_success => 1 };
 };
 
 get '/logout' => sub {
