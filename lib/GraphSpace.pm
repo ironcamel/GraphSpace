@@ -3,6 +3,7 @@ use Dancer ':syntax';
 
 our $VERSION = '0.0001';
 
+use v5.10;
 use Dancer::Plugin::Ajax;
 use Dancer::Plugin::DBIC;
 use File::Slurp qw(read_file);
@@ -15,7 +16,7 @@ hook before => sub {
     var api_user => request->env->{REMOTE_USER};
     #debug '*** referer: '. request->header('referer');
 
-    if (! session('user') && request->path_info !~ m{^/(login|help|api)}) {
+    if (! session('user_id') && request->path_info !~ m{^/(login|help|api)}) {
         var requested_path => request->path_info;
         #request->path_info('/login');
     }
@@ -23,7 +24,7 @@ hook before => sub {
 
 hook before_template_render => sub {
     my $tokens = shift;
-    $tokens->{user_id} = session 'user';
+    $tokens->{user_id} = session 'user_id';
 };
 
 get '/' => sub { redirect uri_for '/graphs' };
@@ -55,7 +56,7 @@ post '/login' => sub {
     my $password = params->{password};
     my $user = schema->resultset('User')->find($username);
     if ($user and $user->password eq $password) {
-        session user => $username;
+        session user_id => $username;
         redirect uri_for(params->{requested_path} || '/graphs');
     } else {
         redirect uri_for('/login') . '?failed=1';
@@ -76,7 +77,7 @@ get '/boot' => sub {
 
 get '/graphs' => sub {
     my $tag = params->{tag};
-    my $user_id = session 'user';
+    my $user_id = session 'user_id';
     my $search = $user_id ? { user_id => $user_id } : {};
     my @graphs = $tag
         ? schema->resultset('GraphTag')->find({ name => $tag })->graphs
@@ -222,7 +223,7 @@ sub delete_graph {
         status 404;
         return { error => "No graph exists with an id of $graph_id" };
     }
-    my $user_id = session('user') // var('api_user') // '';
+    my $user_id = session('user_id') // var('api_user') // '';
     if ($graph->user_id ne $user_id) {
         status 403;
         return { error => "You can only delete your own graphs" };
