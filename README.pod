@@ -32,6 +32,13 @@ Then just run:
 
 Now you can visit http://localhost:5000 and your app should be running.
 
+There are many other ways to deploy GraphSpace.
+The above way is the simplest and will meet the needs of most users.
+GraphSpace is simply a L<Plack>/L<PSGI> application written using the L<Dancer>
+web framework.
+You can visit L<Dancer::Deployment> for more information on deploying Dancer
+based applications.
+
 =head1 API
 
 GraphSpace provides a web based ReSTful API for managing your graphs.
