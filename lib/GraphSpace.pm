@@ -116,7 +116,7 @@ get '/graphs' => sub {
     };
 };
 
-ajax '/graphs/:graph_id' => sub {
+get '/ajax/graphs/:graph_id' => sub {
     my $graph = get_graph(params->{graph_id});
     return $graph ? $graph->json : { error => 'graph not found' };
 };

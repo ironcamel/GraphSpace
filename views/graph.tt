@@ -148,7 +148,7 @@ $(function() {
         [% IF is_ppi %]
         url: "[% request.uri_base %]/ppi/[% graph_id %]",
         [% ELSE %]
-        url: "[% request.uri_base %]/graphs/[% graph.id %]",
+        url: "[% request.uri_base %]/ajax/graphs/[% graph.id %]",
         [% END %]
         dataType: 'text',
         error: function(xhr, text, err) { 
