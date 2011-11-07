@@ -131,7 +131,7 @@ $(function() {
         var params = validate_account();
         if (!params)
             return;
-        $.post("[% request.uri_base %]/users", params, function(data) {
+        $.post("[% request.uri_base %]/ajax/users", params, function(data) {
             if (!data) {
               account_error('I do not know why');
             }

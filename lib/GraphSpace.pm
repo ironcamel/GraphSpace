@@ -1,12 +1,11 @@
 package GraphSpace;
 use Dancer ':syntax';
 
-our $VERSION = '0.0001';
-
 use v5.10;
-use Dancer::Plugin::Ajax;
 use Dancer::Plugin::DBIC;
 use File::Slurp qw(read_file);
+
+our $VERSION = '0.0001';
 
 # Automagically create db tables the first time this app is run
 eval { schema->resultset('User')->count };
@@ -63,7 +62,7 @@ post '/login' => sub {
     }
 };
 
-ajax '/users' => sub {
+post '/ajax/users' => sub {
     my $username = param 'username'
         or return { err_msg => 'The username is missing.' };
     my $password = param 'password'
@@ -136,7 +135,7 @@ get '/graphs/:graph_id' => sub {
 
 get '/tags' => sub {
     my @tags = map { $_->name } schema->resultset('GraphTag')->all;
-    return to_json \@tags;
+    return \@tags;
 };
 
 post '/graphs/:graph_id/tags' => sub {
@@ -219,26 +218,6 @@ del '/graphs/:graph_id' => \&delete_graph;
 
 del '/api/graphs/:graph_id' => \&delete_graph;
 
-ajax '/ppi/:go_id' => sub {
-    my $go_id = params->{go_id};
-    debug "ajax ppi $go_id";
-    return to_json get_ppi($go_id);
-};
-
-get '/ppi/:go_id' => sub {
-    my $go_id = params->{go_id};
-    debug "get ppi $go_id";
-
-    if (not -f path config->{ppi_path}, $go_id) {
-        status 404;
-        return "The ppi graph [$go_id] does not exist\n";
-    };
-    template graph => {
-        graph_id => $go_id,
-        is_ppi => 1,
-    };
-};
-
 sub get_graph { schema->resultset('Graph')->find($_[0]) }
 
 sub delete_graph {
@@ -299,53 +278,6 @@ sub delete_all_tags {
         $graph->remove_from_tags($tag);
         $tag->delete if $tag->graphs->count == 0;
     }
-}
-
-sub get_ppi {
-    my ($go_id) = @_;
-    my $path = path config->{ppi_path}, $go_id;
-    debug "getting $path";
-    my $ppi = from_json read_file $path;
-    my $graph = {
-        graph => {
-            dataSchema => {
-                nodes => [
-                    { name => 'label', type => 'string' },
-                    { name => 'popup', type => 'string' },
-                    { name => 'tooltip', type => 'string' },
-                    { name => 'color', type => 'string' },
-                    { name => 'size', type => 'int' },
-                    { name => 'shape', type => 'string' },
-                    { name => 'go_function_id', type => 'string' },
-                ],
-                edges => [
-                    { name => 'width', type => 'double' },
-                    { name => 'label', type => 'string' },
-                    { name => 'popup', type => 'string' },
-                ],
-            },
-            data => {
-                nodes => [
-                    map {
-                        id => $_,
-                        label => $_,
-                        popup => "<a target='_blank' href='http://www.yeastgenome.org/cgi-bin/locus.fpl?locus=$_'>$_</a>",
-                        tooltip => $_,
-                        size => 25,
-                    }, @{$ppi->{nodes}}
-                ],
-                edges => [
-                    map {
-                        id => $_->[0] . '-' . $_->[1],
-                        source => $_->[0],
-                        target => $_->[1],
-                        width => 3,
-                    }, @{$ppi->{edges}}
-                ],
-            },
-        },
-    };
-    return $graph;
 }
 
 true;

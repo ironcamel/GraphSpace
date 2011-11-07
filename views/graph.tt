@@ -35,16 +35,6 @@ function show_popup(evt) {
     $('#dialog').dialog('open');
 }
 
-function get_ppi(go_id) {
-    return $.ajax({
-        url: "[% request.uri_base %]/ppi/" + go_id,
-        dataType: 'text',
-        error: function(xhr, text, err) { 
-            alert('ajax error: ' + text);
-        },
-    }).responseText;
-}
-
 function add_data_schema(graph) {
     graph.dataSchema = {
        "nodes" : [
@@ -88,14 +78,7 @@ var div_id = "cytoscapeweb";
 
 function gen_node_details(data) {
     var body = data.popup;
-    var graph_id = data.go_function_id;
-    if (graph_id) {
-        body = '<b>Related Graphs</b><br/>'
-            + '<a href="[% request.uri_base %]/ppi/' + graph_id
-            + '" target="_blank">'
-            + graph_id + '</a><hr/>' + body;
-    }
-    graph_id = data.graph_id;
+    var graph_id = data.graph_id;
     if (graph_id) {
         body = '<b>Related Graphs</b><br/>'
             + '<p>'
@@ -145,11 +128,7 @@ vis.ready(function() {
 $(function() {
     $('#dialog').dialog({ autoOpen: false, show: 'fade' });
     $.ajax({
-        [% IF is_ppi %]
-        url: "[% request.uri_base %]/ppi/[% graph_id %]",
-        [% ELSE %]
         url: "[% request.uri_base %]/ajax/graphs/[% graph.id %]",
-        [% END %]
         dataType: 'text',
         error: function(xhr, text, err) { 
             alert('ajax error: ' + text);

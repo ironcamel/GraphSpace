@@ -21,5 +21,3 @@ plugins:
             pass: graphspace_db_password
     #NYTProf:
         #profdir: ./profiles
-
-ppi_path: /var/local/Graph-Space/ppi/yeast_biogrid
