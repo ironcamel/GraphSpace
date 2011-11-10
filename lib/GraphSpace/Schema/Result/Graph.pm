@@ -6,18 +6,16 @@ use warnings;
 __PACKAGE__->table('graph');
 
 __PACKAGE__->add_columns(
-    id      => { data_type => 'integer', is_auto_increment => 1,
-                 is_nullable => 0 },
-    name    => { data_type => 'text', is_nullable => 1 },
-    json    => { data_type => 'text', is_nullable => 1 },
-    user_id => { data_type => 'text', is_nullable => 1 },
+    id      => { data_type => 'varchar(500)', is_nullable => 0 },
+    user_id => { data_type => 'varchar(100)', is_nullable => 0 },
+    json    => { data_type => 'text', is_nullable => 0 },
 );
 
-__PACKAGE__->set_primary_key('id');
+__PACKAGE__->set_primary_key('id', 'user_id');
 
 __PACKAGE__->belongs_to(
     user => "GraphSpace::Schema::Result::User",
-    { id => "user_id" },
+    { 'foreign.id' => 'self.user_id' },
     {
         is_deferrable => 1,
         join_type     => "LEFT",
@@ -28,8 +26,14 @@ __PACKAGE__->belongs_to(
 
 __PACKAGE__->has_many(
     graph_to_tag => 'GraphSpace::Schema::Result::GraphToTag',
-    { 'foreign.graph_id' => 'self.id' },
-    { cascade_copy => 0, cascade_delete => 1 },
+    {
+        'foreign.graph_id' => 'self.id',
+        'foreign.user_id'  => 'self.user_id',
+    },
+    {
+        cascade_copy   => 0,
+        cascade_delete => 1,
+    },
 );
 
 __PACKAGE__->many_to_many(qw(tags graph_to_tag tag));
