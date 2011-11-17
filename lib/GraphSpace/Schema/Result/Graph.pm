@@ -6,9 +6,11 @@ use warnings;
 __PACKAGE__->table('graph');
 
 __PACKAGE__->add_columns(
-    id      => { data_type => 'varchar(500)', is_nullable => 0 },
-    user_id => { data_type => 'varchar(100)', is_nullable => 0 },
-    json    => { data_type => 'text', is_nullable => 0 },
+    id       => { data_type => 'varchar(500)', is_nullable => 0 },
+    user_id  => { data_type => 'varchar(100)', is_nullable => 0 },
+    json     => { data_type => 'text', is_nullable => 0 },
+    created  => { data_type => 'timestamp', is_nullable => 0 },
+    modified => { data_type => 'timestamp', is_nullable => 0 },
 );
 
 __PACKAGE__->set_primary_key('id', 'user_id');

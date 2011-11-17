@@ -1,18 +1,18 @@
 CREATE TABLE user (
-    id TEXT primary key,
+    id VARCHAR(100) primary key,
     password TEXT,
     name TEXT,
     email TEXT
 );
 
 CREATE TABLE graph (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
+    id VARCHAR(500),
+    user_id VARCHAR(100),
     json TEXT,
-    user_id TEXT,
+    created TIMESTAMP,
+    modified TIMESTAMP,
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
-create index graph_user_id_idx on graph(user_id);
 
 CREATE TABLE graph_tag (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,32 +20,9 @@ CREATE TABLE graph_tag (
 );
 
 CREATE TABLE graph_to_tag (
-    graph_id INTEGER,
+    graph_id VARCHAR(500),
     tag_id INTEGER,
     PRIMARY KEY (graph_id, tag_id),
     FOREIGN KEY(graph_id) REFERENCES graph(id),
     FOREIGN KEY(tag_id) REFERENCES graph(id)
 );
-
-insert into user (id, password, name) values ('test', 'test', 'Test Account');
-/*
-insert into user (id, password, name) values ('chrisp', 'chrisp', 'Chris Poirel');
-insert into user (id, password, name) values ('chrisl', 'chrisl', 'Chris Lasher');
-insert into user (id, password, name) values ('arjun', 'arjun', 'Arjun');
-insert into user (id, password, name) values ('naveed', 'naveed', 'Naveed');
-
-INSERT INTO graph(id, json) VALUES('5', '{
-    "graph": {
-       "data": {
-          "nodes": [
-             { "id": "1" },
-             { "id": "2" }
-          ],
-          "edges" : [
-             { "id": "2to1", "source": "2", "target": "1" }
-          ]
-       }
-    "metadata": { "name": "sample 1" }
-}');
-
-*/

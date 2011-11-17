@@ -128,7 +128,7 @@ vis.ready(function() {
 $(function() {
     $('#dialog').dialog({ autoOpen: false, show: 'fade' });
     $.ajax({
-        url: "[% request.uri_base %]/ajax/graphs/[% graph.id %]",
+        url: "[% request.uri_base %]/ajax/users/[% user_id %]/graphs/[% graph.id %]",
         dataType: 'text',
         error: function(xhr, text, err) { 
             alert('ajax error: ' + text);

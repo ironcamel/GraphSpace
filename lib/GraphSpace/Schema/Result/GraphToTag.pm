@@ -28,13 +28,13 @@ __PACKAGE__->set_primary_key("graph_id", "tag_id");
 __PACKAGE__->belongs_to(
     graph => "GraphSpace::Schema::Result::Graph",
     {
-        'foreign.id' => 'user.graph_id',
-        'foreign.user_id' => 'user.user_id',
+        'foreign.id'      => 'self.graph_id',
+        'foreign.user_id' => 'self.user_id',
     },
     {
         is_deferrable => 1,
-        on_delete => "CASCADE",
-        on_update => "CASCADE",
+        on_delete     => "CASCADE",
+        on_update     => "CASCADE",
     },
 );
 

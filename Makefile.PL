@@ -3,8 +3,9 @@ WriteMakefile(
     NAME         => 'GraphSpace',
     VERSION_FROM => 'lib/GraphSpace.pm',
     PREREQ_PM => {
-       'Dancer'               => '0',
+       'Dancer'               => '1.3080',
        'Dancer::Plugin::DBIC' => '0',
+       'DateTime'             => '0',
        'File::Slurp'          => '0',
        'JSON'                 => '0',
        'Plack'                => '0',

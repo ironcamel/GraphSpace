@@ -1,3 +1,4 @@
 log: "debug"
+logger: file
 warnings: 1
 show_errors: 1

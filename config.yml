@@ -1,6 +1,6 @@
 appname: GraphSpace
 layout: bootstrap
-logger: file
+#logger: file
 #logger: console
 session: YAML
 serializer: JSON
@@ -16,7 +16,7 @@ plugins:
     DBIC:
         graphdb:
             schema_class: 'GraphSpace::Schema'
-            dsn: dbi:SQLite:dbname=/home/naveed/projects/GraphSpace/data/graph-space.db
+            dsn: dbi:SQLite:dbname=/home/naveed/projects/GraphSpace2/data/graph-space.db
             user: graphspace_db_user
             pass: graphspace_db_password
     #NYTProf:

@@ -3,6 +3,7 @@ use Dancer ':syntax';
 
 use v5.10;
 use Dancer::Plugin::DBIC;
+use DateTime;
 use File::Slurp qw(read_file);
 
 our $VERSION = '0.0001';
@@ -23,7 +24,7 @@ hook before => sub {
 
 hook before_template_render => sub {
     my $tokens = shift;
-    $tokens->{user_id} = session 'user_id';
+    $tokens->{user_id} = param('user_id') // session('user_id');
 };
 
 get '/' => sub { redirect uri_for '/graphs' };
@@ -117,21 +118,20 @@ get '/graphs' => sub {
     };
 };
 
-get '/ajax/graphs/:graph_id' => sub {
-    my $graph = get_graph(params->{graph_id});
+get '/ajax/users/:user_id/graphs/:graph_id' => sub {
+    my $graph = get_graph();
     return $graph ? $graph->json : { error => 'graph not found' };
 };
 
-get '/graphs/:graph_id' => sub {
-    my $graph_id = param 'graph_id';
+get '/users/:user_id/graphs/:graph_id' => sub {
     my $size = param('size') || '';
     my $template = $size eq 'large' ? 'large' : 'graph';
-    my $graph = get_graph($graph_id);
-    return send_error "The graph [$graph_id] does not exist", 404
+    my $graph = get_graph();
+    return send_error "The graph does not exist", 404
         unless $graph;
     template $template => {
-        graph        => $graph,
-        graph_tags   => [ $graph->tags ],
+        graph      => $graph,
+        graph_tags => [ $graph->tags ],
     };
 };
 
@@ -143,102 +143,107 @@ get '/tags' => sub {
 post '/graphs/:graph_id/tags' => sub {
     my $tag_name = request->body;
     my $graph_id = params->{graph_id};
-    add_tags($graph_id, [ $tag_name ]);
+    add_tags([ $tag_name ]);
     return { name => $tag_name };
 };
 
 del '/graphs/:graph_id/tags/:tag' => sub {
     my $tag_name = params->{tag};
     my $graph_id = params->{graph_id};
-    delete_tags($graph_id, [$tag_name]);
+    delete_tags([$tag_name]);
     return 1;
 };
 
 get '/foo' => sub { template 'foo' => {}, {layout => 0}};
 
-get '/api/graphs/:graph_id' => sub {
-    my $graph_id = params->{graph_id};
-    my $graph = get_graph($graph_id);
+get '/api/users/:user_id/graphs/:graph_id' => sub {
+    my $graph = get_graph();
     if (not $graph) {
         status 404;
-        return "No such graph exists with id $graph_id\n";
+        return { error => "No such graph exists" };
     }
     content_type 'application/json';
     return $graph->json;
 };
 
-post '/api/graphs' => sub {
+any [qw(post put)] => '/api/users/*/**' => sub {
+    my ($user_id) = splat;
+    if ($user_id ne var 'api_user') {
+        status 403;
+        return { error => "You can't mess with others graphs." };
+    }
     my $json = request->body;
-    my $data = from_json $json;
-    my $name = $data->{metadata}{name}
-        or return send_error("The graph metadata must contain a name\n", 400);
+    my $data = from_json $json, { utf8 => 1 };
+    var data => $data;
+    pass;
+};
+
+post '/api/users/:user_id/graphs' => sub {
+    my $user_id = param 'user_id';
+    my $graph_id = int rand() * 1_000_000_000;
+    my $json = request->body;
+    my $data = var 'data';
+    my $now = DateTime->now();
     my $graph = schema->resultset('Graph')->create({
-        name    => $name,
-        json    => $json,
-        user_id => var('api_user'),
+        id       => $graph_id,
+        user_id  => $user_id,
+        json     => $json,
+        created  => $now,
+        modified => $now,
     });
-    my $graph_id = $graph->id;
     my $tags = $data->{metadata}{tags};
-    add_tags($graph_id, $tags) if $tags;
+    add_tags($tags) if $tags;
     status 201;
     header location => uri_for("/api/graphs/$graph_id");
-    return {
-        id  => $graph_id,
-        url => uri_for("/graphs/$graph_id")->as_string,
-    };
+    return graph_response();
 };
 
-put '/api/graphs/:graph_id' => sub {
-    my $graph_id = params->{graph_id};
-    my $graph = get_graph($graph_id);
-    if (not $graph) {
-        status 404;
-        return { error => "No graph exists with an id of $graph_id" };
-    }
+put '/api/users/:user_id/graphs/:graph_id' => sub {
+    my $user_id = param 'user_id';
+    my $graph_id = param 'graph_id';
     my $json = request->body;
-    my $data = from_json $json;
-    my $name = $data->{metadata}{name};
-    if (not defined $name) {
-        status 400;
-        return { error => "The graph metadata must contain a name" };
-    }
-    $graph->update({
-        name    => $name,
-        json    => $json,
-        user_id => var('api_user'),
+    my $data = var 'data';
+    #debug $data;
+    my $now = DateTime->now();
+    schema->resultset('Graph')->update_or_create({
+        id       => $graph_id,
+        user_id  => $user_id,
+        json     => $json,
+        created  => $now, # TODO: fix this
+        modified => $now,
     });
-    delete_all_tags($graph_id);
+    delete_all_tags();
     my $tags = $data->{metadata}{tags};
-    add_tags($graph_id, $tags) if $tags;
-    return {
-        id  => $graph_id,
-        url => uri_for("/graphs/$graph_id")->as_string,
-    };
+    #debug $json;
+    #debug $data;
+    add_tags($tags) if $tags;
+    return graph_response();
 };
 
-del '/graphs/:graph_id' => \&delete_graph;
+del '/users/:user_id/graphs/:graph_id' => \&delete_graph;
 
-del '/api/graphs/:graph_id' => \&delete_graph;
+del '/api/users/:user_id/graphs/:graph_id' => \&delete_graph;
 
-sub get_graph { schema->resultset('Graph')->find($_[0]) }
+sub get_graph {
+    my $graph_id = param 'graph_id';
+    my $user_id = param 'user_id';
+    return schema->resultset('Graph')->find($graph_id, $user_id);
+}
 
 sub delete_graph {
-    my $graph_id = params->{graph_id};
-    my $graph = get_graph($graph_id);
+    my $graph = get_graph();
     if (not $graph) {
         status 404;
-        return { error => "No graph exists with an id of $graph_id" };
+        return { error => "No such graph exists" };
     }
     my $user_id = session('user_id') // var('api_user') // '';
     if ($graph->user_id ne $user_id) {
         status 403;
         return { error => "You can only delete your own graphs" };
     }
-
+    delete_all_tags();
     $graph->delete;
-    # TODO: Should we delete orphaned tags? DBIC takes care of deleting rows
-    # from relationship table.
-    return { id => $graph_id };
+    return '';
 };
 
 sub validate_tags {
@@ -246,10 +251,9 @@ sub validate_tags {
 }
 
 sub add_tags {
-    my ($graph_id, $tags) = @_;
-    my $graph = get_graph($graph_id);
+    my ($tags) = @_;
+    my $graph = get_graph();
     for my $tag_name (@$tags) {
-        #debug "adding tag $tag_name to graph_id $graph_id";
         $tag_name =~ s/\s/-/g; # We are not allowing whitespace in tags.
         $tag_name = lc $tag_name;
         my $tag = schema->resultset('GraphTag')
@@ -259,10 +263,9 @@ sub add_tags {
 }
 
 sub delete_tags {
-    my ($graph_id, $tags) = @_;
-    my $graph = get_graph($graph_id);
+    my ($tags) = @_;
+    my $graph = get_graph();
     for my $tag_name (@$tags) {
-        #debug "deleting tag $tag_name from graph_id $graph_id";
         my $tag = schema->resultset('GraphTag')->find({ name => $tag_name });
         if ($tag) {
             $graph->remove_from_tags($tag);
@@ -272,14 +275,21 @@ sub delete_tags {
 }
 
 sub delete_all_tags {
-    my ($graph_id) = @_;
-    debug "deleting all tags for graph_id $graph_id";
-    my $graph = get_graph($graph_id);
+    my $graph = get_graph();
+    return unless $graph;
     for my $tag ($graph->tags) {
-        debug "deleting tag " . $tag->name . " from graph_id $graph_id";
         $graph->remove_from_tags($tag);
         $tag->delete if $tag->graphs->count == 0;
     }
+}
+
+sub graph_response {
+    my $graph_id = param 'graph_id';
+    my $user_id = param 'user_id';
+    return {
+        id  => $graph_id,
+        url => uri_for("/users/$user_id/graphs/$graph_id")->as_string,
+    };
 }
 
 true;
