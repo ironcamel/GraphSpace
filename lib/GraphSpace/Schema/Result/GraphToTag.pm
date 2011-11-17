@@ -31,17 +31,13 @@ __PACKAGE__->belongs_to(
         'foreign.id'      => 'self.graph_id',
         'foreign.user_id' => 'self.user_id',
     },
-    {
-        is_deferrable => 1,
-        on_delete     => "CASCADE",
-        on_update     => "CASCADE",
-    },
+    { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
 
 __PACKAGE__->belongs_to(
-  tag => "GraphSpace::Schema::Result::GraphTag",
-  { id => "tag_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+    tag => "GraphSpace::Schema::Result::GraphTag",
+    { id => "tag_id" },
+    { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
 
 1;

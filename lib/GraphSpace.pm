@@ -206,15 +206,13 @@ put '/api/users/:user_id/graphs/:graph_id' => sub {
     my $now = DateTime->now();
     my $graph = get_graph();
     if ($graph) {
-        $graph->update({ json => $json, modified => $now });
+        $graph->update({ json => $json });
         delete_all_tags();
     } else {
-        schema->resultset('Graph')->update_or_create({
-            id       => $graph_id,
-            user_id  => $user_id,
-            json     => $json,
-            created  => $now,
-            modified => $now,
+        schema->resultset('Graph')->create({
+            id      => $graph_id,
+            user_id => $user_id,
+            json    => $json,
         });
     }
     my $tags = $data->{metadata}{tags};
