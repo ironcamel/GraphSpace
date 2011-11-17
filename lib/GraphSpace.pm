@@ -203,19 +203,21 @@ put '/api/users/:user_id/graphs/:graph_id' => sub {
     my $graph_id = param 'graph_id';
     my $json = request->body;
     my $data = var 'data';
-    #debug $data;
     my $now = DateTime->now();
-    schema->resultset('Graph')->update_or_create({
-        id       => $graph_id,
-        user_id  => $user_id,
-        json     => $json,
-        created  => $now, # TODO: fix this
-        modified => $now,
-    });
-    delete_all_tags();
+    my $graph = get_graph();
+    if ($graph) {
+        $graph->update({ json => $json, modified => $now });
+        delete_all_tags();
+    } else {
+        schema->resultset('Graph')->update_or_create({
+            id       => $graph_id,
+            user_id  => $user_id,
+            json     => $json,
+            created  => $now,
+            modified => $now,
+        });
+    }
     my $tags = $data->{metadata}{tags};
-    #debug $json;
-    #debug $data;
     add_tags($tags) if $tags;
     return graph_response();
 };
