@@ -1,7 +1,7 @@
 <script>
 $(function() {
     $.ajax({
-        url: '[% request.uri_base %]/tags',
+        url: '[% request.uri_base %]/ajax/tags',
         success: function(data) {
             //console.log(data);
             $('#search_inp').autocomplete({ source: data });
@@ -32,7 +32,7 @@ $(function() {
     [% FOREACH g IN graphs %]
     <tr>
       <td>
-        <a href="[% request.uri_base %]/users/[% user_id %]/graphs/[% g.id %]">[% g.id %]</a>
+        <a href="[% request.uri_base %]/users/[% g.user_id %]/graphs/[% g.id %]">[% g.id %]</a>
       </td>
       <td>
         [% g.modified %]

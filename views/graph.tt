@@ -60,10 +60,9 @@ function add_data_schema(graph) {
 }
 
 function delete_tag(tag) {
-    var url = '[% request.uri_base %]/graphs/[% graph.id %]/tags/' + tag;
+    var url = '[% request.uri_base %]/ajax/users/[% user_id %]/graphs/[% graph.id %]/tags/' + tag;
     $.ajax({
         url: url,
-        dataType: 'text',
         type: 'DELETE',
         error: function(xhr, text, err) { 
             alert('ajax error: ' + text);
@@ -263,7 +262,7 @@ $(function() {
           }
           $.ajax({
               type: 'POST',
-              url: '[% request.uri_base %]/graphs/[% graph.id %]/tags',
+              url: '[% request.uri_base %]/ajax/users/[% user_id %]/graphs/[% graph.id %]/tags',
               data: tag,
               success: function(data, textStatus) {
                   $('ul.tags').append(

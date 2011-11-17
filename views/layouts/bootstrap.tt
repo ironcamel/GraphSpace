@@ -164,7 +164,7 @@ $(function() {
             <li><a href="#about">About</a></li>
             -->
           </ul>
-          [% IF user_id %]
+          [% IF session.user_id %]
           <ul class="nav secondary-nav">
             <li class="dropdown" data-dropdown="dropdown" >
             <a href="#" class="dropdown-toggle">[% user_id %]</a>

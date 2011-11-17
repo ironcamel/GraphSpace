@@ -3,8 +3,8 @@ use Dancer ':syntax';
 
 use v5.10;
 use Dancer::Plugin::DBIC;
-use DateTime;
 use File::Slurp qw(read_file);
+use Math::Random::Secure qw(irand);
 
 our $VERSION = '0.0001';
 
@@ -135,21 +135,19 @@ get '/users/:user_id/graphs/:graph_id' => sub {
     };
 };
 
-get '/tags' => sub {
+get '/ajax/tags' => sub {
     my @tags = map { $_->name } schema->resultset('GraphTag')->all;
     return \@tags;
 };
 
-post '/graphs/:graph_id/tags' => sub {
+post '/ajax/users/:user_id/graphs/:graph_id/tags' => sub {
     my $tag_name = request->body;
-    my $graph_id = params->{graph_id};
-    add_tags([ $tag_name ]);
+    add_tags([$tag_name]);
     return { name => $tag_name };
 };
 
-del '/graphs/:graph_id/tags/:tag' => sub {
-    my $tag_name = params->{tag};
-    my $graph_id = params->{graph_id};
+del '/ajax/users/:user_id/graphs/:graph_id/tags/:tag' => sub {
+    my $tag_name = param 'tag';
     delete_tags([$tag_name]);
     return 1;
 };
@@ -180,22 +178,19 @@ any [qw(post put)] => '/api/users/*/**' => sub {
 
 post '/api/users/:user_id/graphs' => sub {
     my $user_id = param 'user_id';
-    my $graph_id = int rand() * 1_000_000_000;
+    my $graph_id = int irand(1_000_000_000);
     my $json = request->body;
     my $data = var 'data';
-    my $now = DateTime->now();
     my $graph = schema->resultset('Graph')->create({
         id       => $graph_id,
         user_id  => $user_id,
         json     => $json,
-        created  => $now,
-        modified => $now,
     });
     my $tags = $data->{metadata}{tags};
-    add_tags($tags) if $tags;
+    add_tags($tags, $graph) if $tags;
     status 201;
     header location => uri_for("/api/graphs/$graph_id");
-    return graph_response();
+    return graph_response($graph_id, $user_id);
 };
 
 put '/api/users/:user_id/graphs/:graph_id' => sub {
@@ -203,7 +198,6 @@ put '/api/users/:user_id/graphs/:graph_id' => sub {
     my $graph_id = param 'graph_id';
     my $json = request->body;
     my $data = var 'data';
-    my $now = DateTime->now();
     my $graph = get_graph();
     if ($graph) {
         $graph->update({ json => $json });
@@ -217,7 +211,7 @@ put '/api/users/:user_id/graphs/:graph_id' => sub {
     }
     my $tags = $data->{metadata}{tags};
     add_tags($tags) if $tags;
-    return graph_response();
+    return graph_response($graph_id, $user_id);
 };
 
 del '/users/:user_id/graphs/:graph_id' => \&delete_graph;
@@ -251,8 +245,8 @@ sub validate_tags {
 }
 
 sub add_tags {
-    my ($tags) = @_;
-    my $graph = get_graph();
+    my ($tags, $graph) = @_;
+    $graph ||= get_graph();
     for my $tag_name (@$tags) {
         $tag_name =~ s/\s/-/g; # We are not allowing whitespace in tags.
         $tag_name = lc $tag_name;
@@ -284,8 +278,7 @@ sub delete_all_tags {
 }
 
 sub graph_response {
-    my $graph_id = param 'graph_id';
-    my $user_id = param 'user_id';
+    my ($graph_id, $user_id) = @_;
     return {
         id  => $graph_id,
         url => uri_for("/users/$user_id/graphs/$graph_id")->as_string,
