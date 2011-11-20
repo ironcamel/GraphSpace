@@ -1,7 +1,5 @@
 appname: GraphSpace
 layout: bootstrap
-#logger: file
-#logger: console
 session: YAML
 serializer: JSON
 charset: "UTF-8"
@@ -14,9 +12,9 @@ engines:
 
 plugins:
     DBIC:
-        graphdb:
+        default:
             schema_class: 'GraphSpace::Schema'
-            dsn: dbi:SQLite:dbname=/home/naveed/projects/GraphSpace2/data/graph-space.db
+            dsn: dbi:SQLite:dbname=/var/graphspace.db
             user: graphspace_db_user
             pass: graphspace_db_password
     #NYTProf:
