@@ -15,9 +15,10 @@ $(function() {
 
 <div class="row">
 <div class="span11">
-  <p>
-  <h2>Graphs</h2>
-  </p>
+
+  <p> <h2>Graphs</h2> [% graphs.size %] results</p>
+
+  [% IF graphs.size %]
   <table id="graphs_tbl" style="width:50%">
     <thead>
       <tr>
@@ -48,6 +49,7 @@ $(function() {
     [% END %]
     </tbody>
   </table>
+  [% END %]
 </div> <!-- span11 -->
 
 <script>

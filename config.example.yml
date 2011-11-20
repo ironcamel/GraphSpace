@@ -17,5 +17,3 @@ plugins:
             dsn: dbi:SQLite:dbname=/var/graphspace.db
             user: graphspace_db_user
             pass: graphspace_db_password
-    #NYTProf:
-        #profdir: ./profiles
