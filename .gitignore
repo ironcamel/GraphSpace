@@ -1,9 +1,1 @@
-*.swp
-config.yml
-data/*.db
-foo*
-Foo*
-logs
-sessions
-Session.vim
-xx*
+ignore.txt
