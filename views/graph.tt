@@ -183,11 +183,16 @@ $(function() {
 
 <div class="row">
 
-<div class="span11">
+<div class="[% params.size == 'large' ? 'span16' : 'span11' %]">
   <div id="cytoscapeweb"> Loading graph ...  </div>
-  <a href="[% request.path_info %]?size=large">large view</a>
+  [% IF params.size == 'large' %]
+  <a href="[% request.path %]">normal view</a>
+  [% ELSE %]
+  <a href="[% request.path %]?size=large">large view</a>
+  [% END %]
 </div> <!-- span11 -->
 
+[% IF params.size != 'large' %]
 <div class="span5">
 
   <div id="graph_details_cont" class="accordion">
@@ -291,4 +296,6 @@ $(function() {
   </div> <!-- accordion -->
 
 </div> <!-- span5 -->
+[% END %]
+
 </div> <!-- row -->

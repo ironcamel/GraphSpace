@@ -127,12 +127,9 @@ get '/ajax/users/:user_id/graphs/:graph_id' => sub {
 };
 
 get '/users/:user_id/graphs/:graph_id' => sub {
-    my $size = param('size') || '';
-    my $template = $size eq 'large' ? 'large' : 'graph';
-    my $graph = get_graph();
-    return send_error "The graph does not exist", 404
-        unless $graph;
-    template $template => {
+    my $graph = get_graph()
+        or return send_error "The graph does not exist", 404;
+    template graph => {
         graph      => $graph,
         graph_tags => [ $graph->tags ],
     };
