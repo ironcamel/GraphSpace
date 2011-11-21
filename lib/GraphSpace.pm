@@ -103,13 +103,16 @@ get '/boot' => sub {
 };
 
 get '/graphs' => sub {
-    my $tag = params->{tag};
+    my $tag_name = param 'tag';
     my $user_id = session 'user_id';
     my $search = $user_id ? { user_id => $user_id } : {};
-    my @graphs = $tag
-        ? schema->resultset('GraphTag')->find({ name => $tag })->graphs
-            ->search($search, { rows => 100 })
-        : schema->resultset('Graph')->search($search, { rows => 100 });
+    my @graphs;
+    if ($tag_name) {
+        my $tag = schema->resultset('GraphTag')->find({ name => $tag_name });
+        @graphs = $tag->graphs->search($search, { rows => 100 }) if $tag;
+    } else {
+        @graphs = schema->resultset('Graph')->search($search, { rows => 100 });
+    }
     my @tags = schema->resultset('GraphTag')->search({}, { rows => 100 });
     template graphs => {
         user_id    => $user_id,
@@ -178,7 +181,7 @@ any [qw(post put)] => '/api/users/*/**' => sub {
 
 post '/api/users/:user_id/graphs' => sub {
     my $user_id = param 'user_id';
-    my $graph_id = int irand(1_000_000_000);
+    my $graph_id = irand(1_000_000_000);
     my $json = request->body;
     my $data = var 'data';
     my $graph = schema->resultset('Graph')->create({

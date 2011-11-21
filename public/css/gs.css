@@ -1,4 +1,15 @@
 
+#graphs_tbl td {
+  width:300px;
+}
+
+.graph_id_cont {
+    width:300px;
+    white-space: nowrap;  
+    overflow: hidden;  
+    text-overflow: ellipsis;  
+}
+
 ul.tags {
     margin: 0;
 }
@@ -22,4 +33,6 @@ div.accordion {
     margin-bottom: 10px;
 }
 
-#cytoscapeweb { height: 600px; }
+#cytoscapeweb {
+    height: 600px;
+}

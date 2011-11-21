@@ -16,10 +16,21 @@ $(function() {
 <div class="row">
 <div class="span11">
 
-  <p> <h2>Graphs</h2> [% graphs.size %] results</p>
+  <h2>
+    Graphs
+    <small>
+      [% graphs.size %] results
+      [% IF params.tag %]
+      for:
+      <span class="label">
+          <a href="[% request.uri_base %]/graphs?tag=[% tag.name %]">[% params.tag %]</a>
+      </span>
+      [% END %]
+    </small>
+  </h2>
 
   [% IF graphs.size %]
-  <table id="graphs_tbl" style="width:50%">
+  <table id="graphs_tbl" style="">
     <thead>
       <tr>
         <th>Id</th>
@@ -35,7 +46,9 @@ $(function() {
     [% FOREACH g IN graphs %]
     <tr>
       <td>
-        <a href="[% request.uri_base %]/users/[% g.user_id %]/graphs/[% g.id %]">[% g.id %]</a>
+        <div class="graph_id_cont">
+          <a href="[% request.uri_base %]/users/[% g.user_id %]/graphs/[% g.id %]">[% g.id %]</a>
+        </div>
       </td>
       <td> [% g.modified %] </td>
       [% IF session.user_id %]
@@ -70,12 +83,14 @@ $('#graphs_tbl button').click(function() {
 
   <div class="accordion">
     <h3><a href="#">Search</a></h3>
+    <form method="get" action="[% request.uri_base %]/graphs">
     <div>
       <p>
-        <input id="search_inp" type="text" name="search" />
+        <input id="search_inp" type="text" name="tag" />
       </p>
-      <button id="search_btn" type="button">Search</button>
+      <button id="search_btn" type="submit">Search</button>
     </div>
+    </form>
   </div>
 
   <div class="accordion">
