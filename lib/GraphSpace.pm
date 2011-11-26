@@ -24,7 +24,7 @@ hook before => sub {
 
 hook before_template_render => sub {
     my $tokens = shift;
-    $tokens->{user_id} = param('user_id') // session('user_id');
+    $tokens->{user_id} = params('route')->{user_id} // session('user_id');
 };
 
 get '/' => sub { redirect uri_for '/graphs' };
@@ -107,7 +107,7 @@ get '/graphs' => sub {
     my $user_id = session 'user_id';
     my $search = $user_id ? { user_id => $user_id } : {};
     my @graphs;
-    if ($tag_name) {
+    if (defined $tag_name) {
         my $tag = schema->resultset('GraphTag')->find({ name => $tag_name });
         @graphs = $tag->graphs->search($search, { rows => 100 }) if $tag;
     } else {
@@ -154,6 +154,23 @@ del '/ajax/users/:user_id/graphs/:graph_id/tags/:tag' => sub {
 
 get '/foo' => sub { template 'foo' => {}, {layout => 0}};
 
+# Currently just returns the first 100 graphs. TODO: add paging
+get '/api/users/:user_id/graphs' => sub {
+    my $tag_name = param 'tag';
+    my $user_id = param 'user_id';
+    my $attrs = { columns => [qw(id)], rows => 100 };
+    my @graphs;
+    if (defined $tag_name) {
+        my $tag = schema->resultset('GraphTag')->find({ name => $tag_name });
+        @graphs = $tag->graphs->search({ 'graph.user_id' => $user_id }, $attrs)
+            if $tag;
+    } else {
+        @graphs = schema->resultset('Graph')->search(
+            {user_id => $user_id}, $attrs);
+    }
+    return { graphs => [ map graph_response($_->id, $user_id), @graphs ] };
+};
+
 get '/api/users/:user_id/graphs/:graph_id' => sub {
     my $graph = get_graph();
     if (not $graph) {
@@ -189,7 +206,7 @@ post '/api/users/:user_id/graphs' => sub {
     my $tags = $data->{metadata}{tags};
     add_tags($tags, $graph) if $tags;
     status 201;
-    header location => uri_for("/api/graphs/$graph_id");
+    header location => uri_for("/api/users/:user_id/graphs/$graph_id");
     return graph_response($graph_id, $user_id);
 };
 

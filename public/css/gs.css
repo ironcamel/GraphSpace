@@ -33,6 +33,10 @@ div.accordion {
     margin-bottom: 10px;
 }
 
-#cytoscapeweb {
+.cyto_normal {
     height: 600px;
+}
+
+.cyto_large {
+    height: 800px;
 }

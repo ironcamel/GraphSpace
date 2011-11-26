@@ -30,6 +30,8 @@ function jump_to_graph(evt) {
 
 function show_popup(evt) {
     var data = evt.target.data;
+    if (data.popup == null)
+        return;
     $('#dialog').html(gen_node_details(data));
     $('#dialog').dialog('option', 'title', data.label);
     $('#dialog').dialog('open');
@@ -54,7 +56,7 @@ function add_data_schema(graph) {
           { "name" : "label", "type" : "string" },
           { "name" : "popup", "type" : "string" },
           { "name" : "color", "type" : "string" },
-          { "name" : "graph_id",        "type" : "int"    },
+          { "name" : "graph_id",        "type" : "string" },
           { "name" : "labelFontWeight", "type" : "string" }
        ]
     };
@@ -78,11 +80,13 @@ var div_id = "cytoscapeweb";
 
 function gen_node_details(data) {
     var body = data.popup;
+    if (body == null)
+        body = '';
     var graph_id = data.graph_id;
     if (graph_id) {
-        body = '<b>Related Graphs</b><br/>'
+        body = '<b>Related Graph:</b><br/>'
             + '<p>'
-            + '<a href="[% request.uri_base %]/graphs/' + graph_id
+            + '<a href="[% request.uri_base %]/users/[% user_id %]/graphs/' + graph_id
             + '" target="_blank">'
             + graph_id
             + '</a>'
@@ -183,8 +187,12 @@ $(function() {
 
 <div class="row">
 
-<div class="[% params.size == 'large' ? 'span16' : 'span11' %]">
-  <div id="cytoscapeweb"> Loading graph ...  </div>
+<div class="[% params.size == 'large' ? 'span16' : 'span11' %]" 
+     style="">
+  <div id="cytoscapeweb"
+       class="[% params.size == 'large' ? 'cyto_large' : 'cyto_normal' %]">
+    Loading graph ... 
+  </div>
   [% IF params.size == 'large' %]
   <a href="[% request.path %]">normal view</a>
   [% ELSE %]
@@ -193,7 +201,7 @@ $(function() {
 </div> <!-- span11 -->
 
 [% IF params.size != 'large' %]
-<div class="span5">
+<div class="span5 rightbar">
 
   <div id="graph_details_cont" class="accordion">
     <h3><a href="#">Graph Details</a></h3>
@@ -295,7 +303,7 @@ $(function() {
     <div id="node_details"></div>
   </div> <!-- accordion -->
 
-</div> <!-- span5 -->
+</div> <!-- span5 rightbar-->
 [% END %]
 
 </div> <!-- row -->
