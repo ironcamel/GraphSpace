@@ -19,13 +19,6 @@ function jump_to_graph(evt) {
         return true;
     }
     return false;
-    /*
-    var go_id = data.go_function_id;
-    if (go_id) {
-        window.open('[% request.uri_base %]/ppi/' + go_id);
-        return;
-    }
-    */
 }
 
 function show_popup(evt) {
@@ -48,7 +41,7 @@ function add_data_schema(graph) {
           { "name" : "shape",           "type" : "string" },
           { "name" : "graph_id",        "type" : "string" },
           { "name" : "go_function_id",  "type" : "string" },
-          { "name" : "borderWidth",     "type" : "float"  },
+          { "name" : "borderWidth",     "type" : "double" },
           { "name" : "labelFontWeight", "type" : "string" }
        ],
        "edges" : [
@@ -87,7 +80,7 @@ function gen_node_details(data) {
         body = '<b>Related Graph:</b> '
             + '<a href="[% request.uri_base %]/users/[% user_id %]/graphs/'
             + graph_id
-            + '" target="_blank">'
+            + '?pid=[% graph.id %]" target="_blank">'
             + graph_id
             + '</a>'
             + '<hr/>'
@@ -186,15 +179,17 @@ $(function() {
 
 </script>
 
-
 <div id="dialog" style="max-height:400px; overflow:auto;"></div>
-<!--
--->
 
 <div class="row">
 
 <div class="[% params.size == 'large' ? 'span16' : 'span11' %]" 
      style="">
+  [% IF params.pid %]
+  Parent Graph:
+  <a href="[% request.uri_base %]/users/[% user_id %]/graphs/[% params.pid %]"
+     target="_blank">[% params.pid %]</a>
+  [% END %]
   <div id="cytoscapeweb"
        class="[% params.size == 'large' ? 'cyto_large' : 'cyto_normal' %]">
     Loading graph ... 
@@ -213,7 +208,6 @@ $(function() {
     <h3><a href="#">Graph Details</a></h3>
     <div>
       <div> <b>id:</b> [% graph.id %] </div>
-      <div> <b>name:</b> [% graph.name %] </div>
       <div id="graph_desc_cont" style="display:none">
         <b>description:</b>
         <span id="graph_details"></span>
