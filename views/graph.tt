@@ -44,7 +44,7 @@ function add_data_schema(graph) {
           { "name" : "popup",           "type" : "string" },
           { "name" : "tooltip",         "type" : "string" },
           { "name" : "color",           "type" : "string" },
-          { "name" : "size",            "type" : "float"  },
+          { "name" : "size",            "type" : "string" },
           { "name" : "shape",           "type" : "string" },
           { "name" : "graph_id",        "type" : "string" },
           { "name" : "go_function_id",  "type" : "string" },
