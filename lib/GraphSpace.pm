@@ -106,12 +106,13 @@ get '/graphs' => sub {
     my $tag_name = param 'tag';
     my $user_id = session 'user_id';
     my $search = $user_id ? { user_id => $user_id } : {};
+    my $search_opt = { rows => 100, order_by => { -desc => 'modified' } };
     my @graphs;
     if (defined $tag_name) {
         my $tag = schema->resultset('GraphTag')->find({ name => $tag_name });
-        @graphs = $tag->graphs->search($search, { rows => 100 }) if $tag;
+        @graphs = $tag->graphs->search($search, $search_opt) if $tag;
     } else {
-        @graphs = schema->resultset('Graph')->search($search, { rows => 100 });
+        @graphs = schema->resultset('Graph')->search($search, $search_opt);
     }
     my @tags = schema->resultset('GraphTag')->search({}, { rows => 100 });
     template graphs => {
